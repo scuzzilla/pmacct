@@ -3540,11 +3540,11 @@ void NF_mpls_label_stack(struct channels_list_entry *chptr, struct packet_ptrs *
   struct template_cache_entry *tpl = (struct template_cache_entry *) pptrs->f_tpl;
   struct pkt_mpls_primitives *pmpls = (struct pkt_mpls_primitives *) ((*data) + chptr->extras.off_pkt_mpls_primitives);
   pmpls->mpls_label_stack = NULL;
-  static const int MAX_MPLS_LABEL_LEN = 9;
-  static const int MAX_MPLS_LABELS = 6;
-  static const char *labels_idx[MAX_MPLS_LABELS] = {"0", "1", "2", "3", "4", "5"};
-  static unsigned long int labels_cicle[MAX_MPLS_LABELS] = {0};
-  static char label_buf[MAX_MPLS_LABEL_LEN] = {0};
+  const int MAX_MPLS_LABEL_LEN = 9;
+  const int MAX_MPLS_LABELS = 6;
+  const char *labels_idx[MAX_MPLS_LABELS] = {"0", "1", "2", "3", "4", "5"};
+  unsigned long int labels_cicle[MAX_MPLS_LABELS] = {0};
+  char label_buf[MAX_MPLS_LABEL_LEN] = {0};
 
   switch(hdr->version) {
   case 10:
