@@ -3609,10 +3609,11 @@ void NF_mpls_label_top_handler(struct channels_list_entry *chptr, struct packet_
   case 9:
     if (tpl->tpl[NF9_MPLS_LABEL_1].len == 3) {
       pmpls->mpls_label_top = decode_mpls_label(pptrs->f_data+tpl->tpl[NF9_MPLS_LABEL_1].off);
-      printf("mpls_label_top: %lu\n", pmpls->mpls_label_top);
+      printf("mpls_label_top_1: %lu\n", pmpls->mpls_label_top);
     }
     else if (tpl->tpl[NF9_DATALINK_FRAME_SECTION].len || tpl->tpl[NF9_LAYER2_PKT_SECTION_DATA].len)
       mpls_label_top_handler(chptr, pptrs, data);
+      printf("mpls_label_top_2: %lu\n", pmpls->mpls_label_top);
 
     break;
   default:
