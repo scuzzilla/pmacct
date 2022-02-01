@@ -585,7 +585,8 @@ struct pkt_mpls_primitives {
   u_int32_t mpls_label_bottom;
   u_int8_t mpls_stack_depth;
   
-  /* MPLS stack */
+  /* MPLS stack - fields 70-75 */
+  char *mpls_label_stack;
   u_int32_t mpls_top_label_stack_section;
   u_int32_t mpls_label_stack_section2;
   u_int32_t mpls_label_stack_section3;

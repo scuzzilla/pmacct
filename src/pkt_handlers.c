@@ -740,6 +740,11 @@ void evaluate_packet_handlers()
       primitives++;
     }
 
+    if (channels_list[index].aggregation_2 & COUNT_MPLS_LABEL_STACK) {
+      if (config.acct_type == ACCT_NF) channels_list[index].phandler[primitives] = NF_mpls_label_stack;
+      primitives++;
+    }
+
     if (channels_list[index].aggregation_2 & COUNT_MPLS_LABEL_TOP) {
       if (config.acct_type == ACCT_PM) channels_list[index].phandler[primitives] = mpls_label_top_handler;
       else if (config.acct_type == ACCT_NF) channels_list[index].phandler[primitives] = NF_mpls_label_top_handler;
@@ -3534,13 +3539,18 @@ void NF_mpls_label_stack(struct channels_list_entry *chptr, struct packet_ptrs *
   struct struct_header_v5 *hdr = (struct struct_header_v5 *) pptrs->f_header;
   struct template_cache_entry *tpl = (struct template_cache_entry *) pptrs->f_tpl;
   struct pkt_mpls_primitives *pmpls = (struct pkt_mpls_primitives *) ((*data) + chptr->extras.off_pkt_mpls_primitives);
+  pmpls->mpls_label_stack = NULL;
+  static const int MAX_MPLS_LABEL_LEN = 9;
+  static const int MAX_MPLS_LABELS = 6;
+  static const char *labels_idx[MAX_MPLS_LABELS] = {"0", "1", "2", "3", "4", "5"};
+  static unsigned long int labels_cicle[MAX_MPLS_LABELS] = {0};
+  static char label_buf[MAX_MPLS_LABEL_LEN] = {0};
 
   switch(hdr->version) {
   case 10:
   case 9:
     if (tpl->tpl[NF9_MPLS_LABEL_1].len == 3)
       pmpls->mpls_top_label_stack_section = decode_mpls_label(pptrs->f_data+tpl->tpl[NF9_MPLS_LABEL_1].off);
-      printf("%d", pmpls->mpls_top_label_stack_section);
     if (tpl->tpl[NF9_MPLS_LABEL_2].len == 3)
       pmpls->mpls_label_stack_section2 = decode_mpls_label(pptrs->f_data+tpl->tpl[NF9_MPLS_LABEL_2].off);
     if (tpl->tpl[NF9_MPLS_LABEL_3].len == 3)
@@ -3551,6 +3561,34 @@ void NF_mpls_label_stack(struct channels_list_entry *chptr, struct packet_ptrs *
       pmpls->mpls_label_stack_section5 = decode_mpls_label(pptrs->f_data+tpl->tpl[NF9_MPLS_LABEL_5].off);
     if (tpl->tpl[NF9_MPLS_LABEL_6].len == 3)
       pmpls->mpls_label_stack_section6 = decode_mpls_label(pptrs->f_data+tpl->tpl[NF9_MPLS_LABEL_6].off);
+    
+    labels_cicle[0] = pmpls->mpls_top_label_stack_section;
+    labels_cicle[1] = pmpls->mpls_label_stack_section2;
+    labels_cicle[2] = pmpls->mpls_label_stack_section3;
+    labels_cicle[3] = pmpls->mpls_label_stack_section4;
+    labels_cicle[4] = pmpls->mpls_label_stack_section5;
+    labels_cicle[5] = pmpls->mpls_label_stack_section6;
+
+    sprintf(label_buf, "%lu", labels_cicle[0]);
+    pmpls->mpls_label_stack = (char *) malloc(sizeof(char) * (strlen(label_buf) + 3));
+    strcpy(pmpls->mpls_label_stack, labels_idx[0]);
+    strcat(pmpls->mpls_label_stack, "-");
+    strcat(pmpls->mpls_label_stack, label_buf);
+    strcat(pmpls->mpls_label_stack, ",");
+
+    int idx_0;
+    for(idx_0 = 1; idx_0 < MAX_MPLS_LABELS; idx_0++) {
+      sprintf(label_buf, "%lu", labels_cicle[idx_0]);
+      pmpls->mpls_label_stack = (char *) realloc(pmpls->mpls_label_stack, sizeof(char) * (strlen(label_buf) + 3));
+      strcat(pmpls->mpls_label_stack, labels_idx[idx_0]);
+      strcat(pmpls->mpls_label_stack, "-");
+      strcat(pmpls->mpls_label_stack, label_buf);
+      strcat(pmpls->mpls_label_stack, ",");
+    }
+
+    printf("\n\n\n MPLS_LABEL_STACK: %s\n\n\n", pmpls->mpls_label_stack);
+    free(pmpls->mpls_label_stack);
+
     break;
   default:
     break;
