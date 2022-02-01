@@ -3554,8 +3554,10 @@ void NF_mpls_label_stack(struct channels_list_entry *chptr, struct packet_ptrs *
       printf("mpls_top_label_stack_section: %lu\n", pmpls->mpls_top_label_stack_section);
     if (tpl->tpl[NF9_MPLS_LABEL_2].len == 3)
       pmpls->mpls_label_stack_section2 = decode_mpls_label(pptrs->f_data+tpl->tpl[NF9_MPLS_LABEL_2].off);
+      printf("mpls_label_stack_section2: %lu\n", pmpls->mpls_label_stack_section2);
     if (tpl->tpl[NF9_MPLS_LABEL_3].len == 3)
       pmpls->mpls_label_stack_section3 = decode_mpls_label(pptrs->f_data+tpl->tpl[NF9_MPLS_LABEL_3].off);
+      printf("mpls_label_stack_section3: %lu\n", pmpls->mpls_label_stack_section3);
     if (tpl->tpl[NF9_MPLS_LABEL_4].len == 3)
       pmpls->mpls_label_stack_section4 = decode_mpls_label(pptrs->f_data+tpl->tpl[NF9_MPLS_LABEL_4].off);
     if (tpl->tpl[NF9_MPLS_LABEL_5].len == 3)
