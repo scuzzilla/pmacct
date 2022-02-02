@@ -3594,7 +3594,7 @@ void NF_mpls_label_stack(struct channels_list_entry *chptr, struct packet_ptrs *
       if (pmpls->mpls_label_stack_section6) {
         labels_cicle[5] = pmpls->mpls_label_stack_section6;
       } else {
-        labels_cicle[4] = 0;
+        labels_cicle[5] = 0;
       }
     }
 
