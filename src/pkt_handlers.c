@@ -3559,24 +3559,28 @@ void NF_mpls_label_stack(struct channels_list_entry *chptr, struct packet_ptrs *
       //printf("mpls_label_stack_section2: %zu\n", pmpls->mpls_label_stack_section2);
       labels_cicle[1] = pmpls->mpls_top_label_stack_section;
     }
-    if (tpl->tpl[NF9_MPLS_LABEL_3].len == 3)
+    if (tpl->tpl[NF9_MPLS_LABEL_3].len == 3) {
       pmpls->mpls_label_stack_section3 = decode_mpls_label(pptrs->f_data+tpl->tpl[NF9_MPLS_LABEL_3].off);
       //printf("mpls_label_stack_section3: %lu\n", pmpls->mpls_label_stack_section3);
       labels_cicle[2] = pmpls->mpls_top_label_stack_section;
-    if (tpl->tpl[NF9_MPLS_LABEL_4].len == 3)
+    }
+    if (tpl->tpl[NF9_MPLS_LABEL_4].len == 3) {
       pmpls->mpls_label_stack_section4 = decode_mpls_label(pptrs->f_data+tpl->tpl[NF9_MPLS_LABEL_4].off);
       //printf("mpls_label_stack_section4: %zu\n", pmpls->mpls_label_stack_section4);
       labels_cicle[3] = pmpls->mpls_top_label_stack_section;
-    if (tpl->tpl[NF9_MPLS_LABEL_5].len == 3)
+    }
+    if (tpl->tpl[NF9_MPLS_LABEL_5].len == 3) {
       pmpls->mpls_label_stack_section5 = decode_mpls_label(pptrs->f_data+tpl->tpl[NF9_MPLS_LABEL_5].off);
       //printf("mpls_label_stack_section5: %zu\n", pmpls->mpls_label_stack_section5);
       labels_cicle[4] = pmpls->mpls_top_label_stack_section;
-    if (tpl->tpl[NF9_MPLS_LABEL_6].len == 3)
+    }
+    if (tpl->tpl[NF9_MPLS_LABEL_6].len == 3) {
       pmpls->mpls_label_stack_section6 = decode_mpls_label(pptrs->f_data+tpl->tpl[NF9_MPLS_LABEL_6].off);
       //printf("mpls_label_stack_section6: %zu\n", pmpls->mpls_label_stack_section6);
       labels_cicle[5] = pmpls->mpls_top_label_stack_section;
+    }
 
-    sprintf(label_buf, "%lu", labels_cicle[0]);
+    sprintf(label_buf, "%zu", labels_cicle[0]);
     pmpls->mpls_label_stack = (char *) malloc(sizeof(char) * (strlen(label_buf) + 3));
     strcpy(pmpls->mpls_label_stack, labels_idx[0]);
     strcat(pmpls->mpls_label_stack, "-");
@@ -3585,7 +3589,7 @@ void NF_mpls_label_stack(struct channels_list_entry *chptr, struct packet_ptrs *
 
     int idx_0;
     for(idx_0 = 1; idx_0 < 6; idx_0++) {
-      sprintf(label_buf, "%lu", labels_cicle[idx_0]);
+      sprintf(label_buf, "%zu", labels_cicle[idx_0]);
       pmpls->mpls_label_stack = (char *) realloc(pmpls->mpls_label_stack, sizeof(char) * (strlen(label_buf) + 3));
       strcat(pmpls->mpls_label_stack, labels_idx[idx_0]);
       strcat(pmpls->mpls_label_stack, "-");
