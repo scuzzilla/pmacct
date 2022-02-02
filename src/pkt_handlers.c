@@ -3595,7 +3595,7 @@ void NF_mpls_label_stack(struct channels_list_entry *chptr, struct packet_ptrs *
     }
 
     memset(&label_buf, 0, sizeof(label_buf));
-    sprintf(label_buf, "%lu", labels_cicle[0]);
+    sprintf(label_buf, "%zu", labels_cicle[0]);
     pmpls->mpls_label_stack = (char *) malloc(sizeof(char) * (strlen(label_buf) + 3));
     strcpy(pmpls->mpls_label_stack, labels_idx[0]);
     strcat(pmpls->mpls_label_stack, "-");
@@ -3605,7 +3605,7 @@ void NF_mpls_label_stack(struct channels_list_entry *chptr, struct packet_ptrs *
     int idx_0;
     for(idx_0 = 1; idx_0 < 6; idx_0++) {
       memset(&label_buf, 0, sizeof(label_buf));
-      sprintf(label_buf, "%lu", labels_cicle[idx_0]);
+      sprintf(label_buf, "%zu", labels_cicle[idx_0]);
       pmpls->mpls_label_stack = (char *) realloc(pmpls->mpls_label_stack, sizeof(char) * (strlen(label_buf) + 3));
       strcat(pmpls->mpls_label_stack, labels_idx[idx_0]);
       strcat(pmpls->mpls_label_stack, "-");
