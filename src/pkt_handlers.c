@@ -3536,15 +3536,17 @@ void NF_nat_event_handler(struct channels_list_entry *chptr, struct packet_ptrs 
 
 void NF_mpls_label_stack(struct channels_list_entry *chptr, struct packet_ptrs *pptrs, char **data)
 {
+  #define MAX_MPLS_LABEL_LEN 9
+  #define MAX_MPLS_LABELS 6
+  
   struct struct_header_v5 *hdr = (struct struct_header_v5 *) pptrs->f_header;
   struct template_cache_entry *tpl = (struct template_cache_entry *) pptrs->f_tpl;
   struct pkt_mpls_primitives *pmpls = (struct pkt_mpls_primitives *) ((*data) + chptr->extras.off_pkt_mpls_primitives);
+ 
   pmpls->mpls_label_stack = NULL;
-  #define MAX_MPLS_LABEL_LEN 9
-  #define MAX_MPLS_LABELS 6
   static const char *labels_idx[MAX_MPLS_LABELS] = {"0", "1", "2", "3", "4", "5"};
-  static u_int32_t labels_cicle[6] = {0};
-  static char label_buf[9] = {0};
+  static u_int32_t labels_cicle[MAX_MPLS_LABELS] = {0};
+  static char label_buf[MAX_MPLS_LABEL_LEN] = {0};
 
   switch(hdr->version) {
   case 10:
@@ -3594,7 +3596,7 @@ void NF_mpls_label_stack(struct channels_list_entry *chptr, struct packet_ptrs *
     strcat(pmpls->mpls_label_stack, ",");
 
     int idx_0;
-    for(idx_0 = 1; idx_0 < 6; idx_0++) {
+    for(idx_0 = 1; idx_0 < MAX_MPLS_LABELS; idx_0++) {
       sprintf(label_buf, "%zu", labels_cicle[idx_0]);
       pmpls->mpls_label_stack = (char *) realloc(pmpls->mpls_label_stack, sizeof(char) * (strlen(label_buf) + 3));
       strcat(pmpls->mpls_label_stack, labels_idx[idx_0]);
