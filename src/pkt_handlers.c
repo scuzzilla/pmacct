@@ -3603,7 +3603,7 @@ void NF_mpls_label_stack(struct channels_list_entry *chptr, struct packet_ptrs *
     }
     
     printf("MPLS_LABEL_STACK: %s\n", pmpls->mpls_label_stack);
-    free(pmpls->mpls_label_stack);
+    //free(pmpls->mpls_label_stack);
 
     break;
   default:
