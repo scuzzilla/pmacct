@@ -3604,11 +3604,11 @@ void NF_mpls_label_stack(struct channels_list_entry *chptr, struct packet_ptrs *
       memset(&label_buf, 0, sizeof(label_buf));
       snprintf(label_buf, MAX_MPLS_LABEL_LEN, "%zu", labels_cicle[idx_0]);
       int label_buf_len = strlen(label_buf);
-      pmpls->mpls_label_stack = (char *) realloc(pmpls->mpls_label_stack, sizeof(char) * (label_buf_len + 3));
-      strcat(pmpls->mpls_label_stack, labels_idx[idx_0]);
-      strcat(pmpls->mpls_label_stack, "-");
-      strcat(pmpls->mpls_label_stack, label_buf);
-      strcat(pmpls->mpls_label_stack, ",");
+      char *mls = (char *) realloc(pmpls->mpls_label_stack, sizeof(char) * (label_buf_len + 3));
+      strcat(mls, labels_idx[idx_0]);
+      strcat(mls, "-");
+      strcat(mls, label_buf);
+      strcat(mls, ",");
     }
     
     printf("MPLS_LABEL_STACK: %s\n", pmpls->mpls_label_stack);
