@@ -3570,9 +3570,9 @@ void NF_mpls_label_stack(struct channels_list_entry *chptr, struct packet_ptrs *
     */
 
     labels_cicle[0] = pmpls->mpls_top_label_stack_section;
-    printf("mpls_top_label_stack_section: %lu\n", labels_cicle[0]);
+    printf("array_mpls_top_label_stack_section: %lu\n", labels_cicle[0]);
     labels_cicle[1] = pmpls->mpls_label_stack_section2;
-    printf("mpls_label_stack_section2: %lu\n", labels_cicle[1]);
+    printf("array_mpls_label_stack_section2: %lu\n", labels_cicle[1]);
     //labels_cicle[2] = pmpls->mpls_label_stack_section3;
     //labels_cicle[3] = pmpls->mpls_label_stack_section4;
     //labels_cicle[4] = pmpls->mpls_label_stack_section5;
