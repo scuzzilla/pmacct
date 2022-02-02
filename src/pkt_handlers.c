@@ -3615,7 +3615,7 @@ void NF_mpls_label_top_handler(struct channels_list_entry *chptr, struct packet_
   switch(hdr->version) {
   case 10:
   case 9:
-    if (tpl->tpl[NF9_MPLS_LABEL_1].len == 3) {
+    if (tpl->tpl[NF9_MPLS_LABEL_1].len == 4) {
       pmpls->mpls_label_top = decode_mpls_label(pptrs->f_data+tpl->tpl[NF9_MPLS_LABEL_1].off);
       printf("mpls_label_top_1: %lu\n", pmpls->mpls_label_top);
     }
