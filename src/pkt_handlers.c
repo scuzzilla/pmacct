@@ -3544,6 +3544,7 @@ void NF_mpls_label_stack(struct channels_list_entry *chptr, struct packet_ptrs *
   //const int MAX_MPLS_LABELS = 6;
   static const char *labels_idx[6] = {"0", "1", "2", "3", "4", "5"};
   static u_int32_t labels_cicle[6] = {0};
+  u_int32_t cippa = 0;
   static char label_buf[9] = {0};
 
   switch(hdr->version) {
@@ -3552,6 +3553,8 @@ void NF_mpls_label_stack(struct channels_list_entry *chptr, struct packet_ptrs *
     if (tpl->tpl[NF9_MPLS_LABEL_1].len == 3) {
       pmpls->mpls_top_label_stack_section = decode_mpls_label(pptrs->f_data+tpl->tpl[NF9_MPLS_LABEL_1].off);
       printf("mpls_top_label_stack_section: %zu\n", pmpls->mpls_top_label_stack_section);
+      cippa = pmpls->mpls_top_label_stack_section;
+      printf("cippa: %zu\n", cippa);
     }
     if (tpl->tpl[NF9_MPLS_LABEL_2].len == 3) {
       pmpls->mpls_label_stack_section2 = decode_mpls_label(pptrs->f_data+tpl->tpl[NF9_MPLS_LABEL_2].off);
@@ -3569,8 +3572,6 @@ void NF_mpls_label_stack(struct channels_list_entry *chptr, struct packet_ptrs *
       pmpls->mpls_label_stack_section6 = decode_mpls_label(pptrs->f_data+tpl->tpl[NF9_MPLS_LABEL_6].off);
     */
 
-    u_int32_t cippa = pmpls->mpls_top_label_stack_section;
-    printf("cippa: %zu\n", cippa);
     labels_cicle[0] = cippa;
     printf("array_mpls_top_label_stack_section: %zu\n", labels_cicle[0]);
     labels_cicle[1] = pmpls->mpls_label_stack_section2;
