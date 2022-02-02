@@ -3577,6 +3577,7 @@ void NF_mpls_label_stack(struct channels_list_entry *chptr, struct packet_ptrs *
     }
     if (tpl->tpl[NF9_MPLS_LABEL_5].len == 3) {
       pmpls->mpls_label_stack_section5 = decode_mpls_label(pptrs->f_data+tpl->tpl[NF9_MPLS_LABEL_5].off);
+      printf("mpls_label_stack_section5: %zu\n", pmpls->mpls_label_stack_section5);
       if (pmpls->mpls_label_stack_section5) {
         labels_cicle[4] = pmpls->mpls_label_stack_section5;
       }
