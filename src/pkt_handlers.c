@@ -3569,8 +3569,10 @@ void NF_mpls_label_stack(struct channels_list_entry *chptr, struct packet_ptrs *
       pmpls->mpls_label_stack_section6 = decode_mpls_label(pptrs->f_data+tpl->tpl[NF9_MPLS_LABEL_6].off);
     */
 
-    labels_cicle[0] = pmpls->mpls_top_label_stack_section;
-    //printf("array_mpls_top_label_stack_section: %zu\n", labels_cicle[0]);
+    u_int32_t cippa = pmpls->mpls_top_label_stack_section;
+    printf("cippa: %zu\n", cippa);
+    labels_cicle[0] = cippa;
+    printf("array_mpls_top_label_stack_section: %zu\n", labels_cicle[0]);
     labels_cicle[1] = pmpls->mpls_label_stack_section2;
     //printf("array_mpls_label_stack_section2: %zu\n", labels_cicle[1]);
     //labels_cicle[2] = pmpls->mpls_label_stack_section3;
