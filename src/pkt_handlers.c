@@ -3549,12 +3549,15 @@ void NF_mpls_label_stack(struct channels_list_entry *chptr, struct packet_ptrs *
   switch(hdr->version) {
   case 10:
   case 9:
-    if (tpl->tpl[NF9_MPLS_LABEL_1].len == 3)
+    if (tpl->tpl[NF9_MPLS_LABEL_1].len == 3) {
       pmpls->mpls_top_label_stack_section = decode_mpls_label(pptrs->f_data+tpl->tpl[NF9_MPLS_LABEL_1].off);
       printf("mpls_top_label_stack_section: %lu\n", pmpls->mpls_top_label_stack_section);
-    if (tpl->tpl[NF9_MPLS_LABEL_2].len == 3)
+    }
+    if (tpl->tpl[NF9_MPLS_LABEL_2].len == 3) {
       pmpls->mpls_label_stack_section2 = decode_mpls_label(pptrs->f_data+tpl->tpl[NF9_MPLS_LABEL_2].off);
       printf("mpls_label_stack_section2: %lu\n", pmpls->mpls_label_stack_section2);
+    }
+    /*
     if (tpl->tpl[NF9_MPLS_LABEL_3].len == 3)
       pmpls->mpls_label_stack_section3 = decode_mpls_label(pptrs->f_data+tpl->tpl[NF9_MPLS_LABEL_3].off);
       printf("mpls_label_stack_section3: %lu\n", pmpls->mpls_label_stack_section3);
@@ -3564,11 +3567,12 @@ void NF_mpls_label_stack(struct channels_list_entry *chptr, struct packet_ptrs *
       pmpls->mpls_label_stack_section5 = decode_mpls_label(pptrs->f_data+tpl->tpl[NF9_MPLS_LABEL_5].off);
     if (tpl->tpl[NF9_MPLS_LABEL_6].len == 3)
       pmpls->mpls_label_stack_section6 = decode_mpls_label(pptrs->f_data+tpl->tpl[NF9_MPLS_LABEL_6].off);
-    
+    */
+
     labels_cicle[0] = pmpls->mpls_top_label_stack_section;
     labels_cicle[1] = pmpls->mpls_label_stack_section2;
-    labels_cicle[2] = pmpls->mpls_label_stack_section3;
-    labels_cicle[3] = pmpls->mpls_label_stack_section4;
+    //labels_cicle[2] = pmpls->mpls_label_stack_section3;
+    //labels_cicle[3] = pmpls->mpls_label_stack_section4;
     //labels_cicle[4] = pmpls->mpls_label_stack_section5;
     //labels_cicle[5] = pmpls->mpls_label_stack_section6;
 
@@ -3580,7 +3584,7 @@ void NF_mpls_label_stack(struct channels_list_entry *chptr, struct packet_ptrs *
     strcat(pmpls->mpls_label_stack, ",");
 
     int idx_0;
-    for(idx_0 = 1; idx_0 < 3; idx_0++) {
+    for(idx_0 = 1; idx_0 < 2; idx_0++) {
       sprintf(label_buf, "%lu", labels_cicle[idx_0]);
       pmpls->mpls_label_stack = (char *) realloc(pmpls->mpls_label_stack, sizeof(char) * (strlen(label_buf) + 3));
       strcat(pmpls->mpls_label_stack, labels_idx[idx_0]);
