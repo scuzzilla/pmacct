@@ -3541,7 +3541,7 @@ void NF_mpls_label_stack(struct channels_list_entry *chptr, struct packet_ptrs *
   struct pkt_mpls_primitives *pmpls = (struct pkt_mpls_primitives *) ((*data) + chptr->extras.off_pkt_mpls_primitives);
   pmpls->mpls_label_stack = NULL;
   #define MAX_MPLS_LABEL_LEN 9
-  #define MAX_MPLS_LABELS = 6;
+  #define MAX_MPLS_LABELS 6
   static const char *labels_idx[MAX_MPLS_LABELS] = {"0", "1", "2", "3", "4", "5"};
   static u_int32_t labels_cicle[6] = {0};
   static char label_buf[9] = {0};
