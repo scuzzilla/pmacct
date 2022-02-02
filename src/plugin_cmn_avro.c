@@ -856,7 +856,8 @@ avro_value_t compose_avro_acct_data(u_int64_t wtc, u_int64_t wtc_2, u_int8_t flo
     if (FALSE) {
       //compose_nfacctd_fwdstatus_avro_data(pnat->forwarding_status, value);
     }
-    else { 
+    else {
+      printf("mpls_label_stack: %s\n", pmpls->mpls_label_stack); 
       pm_avro_check(avro_value_get_by_name(&value, "mpls_label_stack", &field, NULL));
       pm_avro_check(avro_value_set_string(&field, pmpls->mpls_label_stack));
     }
