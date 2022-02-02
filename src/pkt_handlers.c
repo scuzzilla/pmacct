@@ -3588,7 +3588,7 @@ void NF_mpls_label_stack(struct channels_list_entry *chptr, struct packet_ptrs *
     strcat(pmpls->mpls_label_stack, ",");
 
     int idx_0;
-    for(idx_0 = 1; idx_0 < 2; idx_0++) {
+    for(idx_0 = 1; idx_0 < 3; idx_0++) {
       sprintf(label_buf, "%zu", labels_cicle[idx_0]);
       pmpls->mpls_label_stack = (char *) realloc(pmpls->mpls_label_stack, sizeof(char) * (strlen(label_buf) + 3));
       strcat(pmpls->mpls_label_stack, labels_idx[idx_0]);
@@ -3615,7 +3615,7 @@ void NF_mpls_label_top_handler(struct channels_list_entry *chptr, struct packet_
   switch(hdr->version) {
   case 10:
   case 9:
-    if (tpl->tpl[NF9_MPLS_LABEL_1].len == 4) {
+    if (tpl->tpl[NF9_MPLS_LABEL_1].len == 3) {
       pmpls->mpls_label_top = decode_mpls_label(pptrs->f_data+tpl->tpl[NF9_MPLS_LABEL_1].off);
       printf("mpls_label_top_1: %lu\n", pmpls->mpls_label_top);
     }
