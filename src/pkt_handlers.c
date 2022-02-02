@@ -3575,6 +3575,7 @@ void NF_mpls_label_stack(struct channels_list_entry *chptr, struct packet_ptrs *
         labels_cicle[3] = pmpls->mpls_label_stack_section4;
       }
     }
+    /*
     if (tpl->tpl[NF9_MPLS_LABEL_5].len == 3) {
       pmpls->mpls_label_stack_section5 = decode_mpls_label(pptrs->f_data+tpl->tpl[NF9_MPLS_LABEL_5].off);
       if (pmpls->mpls_label_stack_section5) {
@@ -3587,6 +3588,7 @@ void NF_mpls_label_stack(struct channels_list_entry *chptr, struct packet_ptrs *
         labels_cicle[5] = pmpls->mpls_label_stack_section6;
       }
     }
+    */
 
     memset(&label_buf, 0, sizeof(label_buf));
     snprintf(label_buf, MAX_MPLS_LABEL_LEN, "%zu", labels_cicle[0]);
