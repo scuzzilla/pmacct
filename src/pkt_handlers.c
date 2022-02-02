@@ -3536,17 +3536,17 @@ void NF_nat_event_handler(struct channels_list_entry *chptr, struct packet_ptrs 
 
 void NF_mpls_label_stack(struct channels_list_entry *chptr, struct packet_ptrs *pptrs, char **data)
 {
-  #define MAX_MPLS_LABEL_LEN 9
-  #define MAX_MPLS_LABELS 6
+  //#define MAX_MPLS_LABEL_LEN 9
+  //#define MAX_MPLS_LABELS 6
   
   struct struct_header_v5 *hdr = (struct struct_header_v5 *) pptrs->f_header;
   struct template_cache_entry *tpl = (struct template_cache_entry *) pptrs->f_tpl;
   struct pkt_mpls_primitives *pmpls = (struct pkt_mpls_primitives *) ((*data) + chptr->extras.off_pkt_mpls_primitives);
  
   pmpls->mpls_label_stack = NULL;
-  static const char *labels_idx[MAX_MPLS_LABELS] = {"0", "1", "2", "3", "4", "5"};
-  static u_int32_t labels_cicle[MAX_MPLS_LABELS] = {0};
-  static char label_buf[MAX_MPLS_LABEL_LEN];
+  static const char *labels_idx[6] = {"0", "1", "2", "3", "4", "5"};
+  static u_int32_t labels_cicle[6] = {0};
+  static char label_buf[9];
 
   switch(hdr->version) {
   case 10:
@@ -3591,24 +3591,22 @@ void NF_mpls_label_stack(struct channels_list_entry *chptr, struct packet_ptrs *
     */
 
     memset(&label_buf, 0, sizeof(label_buf));
-    snprintf(label_buf, MAX_MPLS_LABEL_LEN, "%zu", labels_cicle[0]);
-    int label_buf_len = strlen(label_buf);
-    pmpls->mpls_label_stack = (char *) malloc(sizeof(char) * (label_buf_len + 3));
+    snprintf(label_buf, 9, "%zu", labels_cicle[0]);
+    pmpls->mpls_label_stack = (char *) malloc(sizeof(char) * (strlen(label_buf) + 3));
     strcpy(pmpls->mpls_label_stack, labels_idx[0]);
     strcat(pmpls->mpls_label_stack, "-");
     strcat(pmpls->mpls_label_stack, label_buf);
     strcat(pmpls->mpls_label_stack, ",");
 
     int idx_0;
-    for(idx_0 = 1; idx_0 < MAX_MPLS_LABELS; idx_0++) {
+    for(idx_0 = 1; idx_0 < 6; idx_0++) {
       memset(&label_buf, 0, sizeof(label_buf));
-      snprintf(label_buf, MAX_MPLS_LABEL_LEN, "%zu", labels_cicle[idx_0]);
-      int label_buf_len = strlen(label_buf);
-      char *mls = (char *) realloc(pmpls->mpls_label_stack, sizeof(char) * (label_buf_len + 3));
-      strcat(mls, labels_idx[idx_0]);
-      strcat(mls, "-");
-      strcat(mls, label_buf);
-      strcat(mls, ",");
+      snprintf(label_buf, 9, "%zu", labels_cicle[idx_0]);
+      pmpls->mpls_label_stack = (char *) realloc(pmpls->mpls_label_stack, sizeof(char) * (strlen(label_buf) + 3));
+      strcat(pmpls->mpls_label_stack, labels_idx[idx_0]);
+      strcat(pmpls->mpls_label_stack, "-");
+      strcat(pmpls->mpls_label_stack, label_buf);
+      strcat(pmpls->mpls_label_stack, ",");
     }
     
     printf("MPLS_LABEL_STACK: %s\n", pmpls->mpls_label_stack);
