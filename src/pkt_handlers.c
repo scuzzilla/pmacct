@@ -3540,58 +3540,50 @@ void NF_mpls_label_stack(struct channels_list_entry *chptr, struct packet_ptrs *
   struct template_cache_entry *tpl = (struct template_cache_entry *) pptrs->f_tpl;
   struct pkt_mpls_primitives *pmpls = (struct pkt_mpls_primitives *) ((*data) + chptr->extras.off_pkt_mpls_primitives);
   pmpls->mpls_label_stack = NULL;
-  //const int MAX_MPLS_LABEL_LEN = 9;
-  //const int MAX_MPLS_LABELS = 6;
-  static const char *labels_idx[6] = {"0", "1", "2", "3", "4", "5"};
+  #define MAX_MPLS_LABEL_LEN 9
+  #define MAX_MPLS_LABELS = 6;
+  static const char *labels_idx[MAX_MPLS_LABELS] = {"0", "1", "2", "3", "4", "5"};
   static u_int32_t labels_cicle[6] = {0};
   static char label_buf[9] = {0};
 
   switch(hdr->version) {
   case 10:
   case 9:
-    /*
-    for (label_idx = NF9_MPLS_LABEL_1; label_idx <= NF9_MPLS_LABEL_9; label_idx++) { 
-      if (tpl->tpl[label_idx].len == 3 && check_bosbit(pptrs->f_data+tpl->tpl[label_idx].off)) {
-        pmpls->mpls_label_bottom = decode_mpls_label(pptrs->f_data+tpl->tpl[label_idx].off);
-	      break;
-      } 
-    }
-    */
     if (tpl->tpl[NF9_MPLS_LABEL_1].len == 3) {
       pmpls->mpls_top_label_stack_section = decode_mpls_label(pptrs->f_data+tpl->tpl[NF9_MPLS_LABEL_1].off);
       if (pmpls->mpls_top_label_stack_section) {
-        //printf("mpls_top_label_stack_section: %zu\n", pmpls->mpls_top_label_stack_section);
         labels_cicle[0] = pmpls->mpls_top_label_stack_section;
       }
     }
     if (tpl->tpl[NF9_MPLS_LABEL_2].len == 3) {
       pmpls->mpls_label_stack_section2 = decode_mpls_label(pptrs->f_data+tpl->tpl[NF9_MPLS_LABEL_2].off);
       if (pmpls->mpls_label_stack_section2) { 
-        //printf("mpls_label_stack_section2: %zu\n", pmpls->mpls_label_stack_section2);
         labels_cicle[1] = pmpls->mpls_label_stack_section2;
       }
     }
     if (tpl->tpl[NF9_MPLS_LABEL_3].len == 3) {
       pmpls->mpls_label_stack_section3 = decode_mpls_label(pptrs->f_data+tpl->tpl[NF9_MPLS_LABEL_3].off);
       if (pmpls->mpls_label_stack_section3) {
-        //printf("mpls_label_stack_section3: %lu\n", pmpls->mpls_label_stack_section3);
         labels_cicle[2] = pmpls->mpls_label_stack_section3;
       }
     }
     if (tpl->tpl[NF9_MPLS_LABEL_4].len == 3) {
       pmpls->mpls_label_stack_section4 = decode_mpls_label(pptrs->f_data+tpl->tpl[NF9_MPLS_LABEL_4].off);
-      //printf("mpls_label_stack_section4: %zu\n", pmpls->mpls_label_stack_section4);
-      labels_cicle[3] = pmpls->mpls_label_stack_section4;
+      if (pmpls->mpls_label_stack_section4) {
+        labels_cicle[3] = pmpls->mpls_label_stack_section4;
+      }
     }
     if (tpl->tpl[NF9_MPLS_LABEL_5].len == 3) {
       pmpls->mpls_label_stack_section5 = decode_mpls_label(pptrs->f_data+tpl->tpl[NF9_MPLS_LABEL_5].off);
-      //printf("mpls_label_stack_section5: %zu\n", pmpls->mpls_label_stack_section5);
-      labels_cicle[4] = pmpls->mpls_label_stack_section5;
+      if (pmpls->mpls_label_stack_section5) {
+        labels_cicle[4] = pmpls->mpls_label_stack_section5;
+      }
     }
     if (tpl->tpl[NF9_MPLS_LABEL_6].len == 3) {
       pmpls->mpls_label_stack_section6 = decode_mpls_label(pptrs->f_data+tpl->tpl[NF9_MPLS_LABEL_6].off);
-      //printf("mpls_label_stack_section6: %zu\n", pmpls->mpls_label_stack_section6);
-      labels_cicle[5] = pmpls->mpls_label_stack_section6;
+      if (pmpls->mpls_label_stack_section6) {
+        labels_cicle[5] = pmpls->mpls_label_stack_section6;
+      }
     }
 
     sprintf(label_buf, "%zu", labels_cicle[0]);
@@ -3602,7 +3594,7 @@ void NF_mpls_label_stack(struct channels_list_entry *chptr, struct packet_ptrs *
     strcat(pmpls->mpls_label_stack, ",");
 
     int idx_0;
-    for(idx_0 = 1; idx_0 < 3; idx_0++) {
+    for(idx_0 = 1; idx_0 < 6; idx_0++) {
       sprintf(label_buf, "%zu", labels_cicle[idx_0]);
       pmpls->mpls_label_stack = (char *) realloc(pmpls->mpls_label_stack, sizeof(char) * (strlen(label_buf) + 3));
       strcat(pmpls->mpls_label_stack, labels_idx[idx_0]);
@@ -3611,11 +3603,6 @@ void NF_mpls_label_stack(struct channels_list_entry *chptr, struct packet_ptrs *
       strcat(pmpls->mpls_label_stack, ",");
     }
     
-    int idx_1;
-    for (idx_1 = 0; idx_1 < 6; idx_1++) {
-      labels_cicle[idx_1] = 0;
-    }
-
     printf("MPLS_LABEL_STACK: %s\n", pmpls->mpls_label_stack);
     free(pmpls->mpls_label_stack);
 
@@ -3636,11 +3623,9 @@ void NF_mpls_label_top_handler(struct channels_list_entry *chptr, struct packet_
   case 9:
     if (tpl->tpl[NF9_MPLS_LABEL_1].len == 3) {
       pmpls->mpls_label_top = decode_mpls_label(pptrs->f_data+tpl->tpl[NF9_MPLS_LABEL_1].off);
-      printf("mpls_label_top_1: %lu\n", pmpls->mpls_label_top);
     }
     else if (tpl->tpl[NF9_DATALINK_FRAME_SECTION].len || tpl->tpl[NF9_LAYER2_PKT_SECTION_DATA].len) {
       mpls_label_top_handler(chptr, pptrs, data);
-      printf("mpls_label_top_2: %lu\n", pmpls->mpls_label_top);
     }
 
     break;
