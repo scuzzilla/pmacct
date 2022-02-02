@@ -3543,7 +3543,7 @@ void NF_mpls_label_stack(struct channels_list_entry *chptr, struct packet_ptrs *
   //const int MAX_MPLS_LABEL_LEN = 9;
   //const int MAX_MPLS_LABELS = 6;
   static const char *labels_idx[6] = {"0", "1", "2", "3", "4", "5"};
-  static unsigned int labels_cicle[6] = {0};
+  static u_int32_t labels_cicle[6] = {0};
   static char label_buf[9] = {0};
 
   switch(hdr->version) {
