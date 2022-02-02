@@ -3534,7 +3534,8 @@ void NF_nat_event_handler(struct channels_list_entry *chptr, struct packet_ptrs 
   }
 }
 
-void NF_mpls_label_stack(struct channels_list_entry *chptr, struct packet_ptrs *pptrs, char **data)
+//void NF_mpls_label_stack(struct channels_list_entry *chptr, struct packet_ptrs *pptrs, char **data)
+void NF_mpls_label_stack()
 {
   struct struct_header_v5 *hdr = (struct struct_header_v5 *) pptrs->f_header;
   struct template_cache_entry *tpl = (struct template_cache_entry *) pptrs->f_tpl;
@@ -3598,7 +3599,7 @@ void NF_mpls_label_stack(struct channels_list_entry *chptr, struct packet_ptrs *
     }
 
     printf("MPLS_LABEL_STACK: %s\n", pmpls->mpls_label_stack);
-    //free(pmpls->mpls_label_stack);
+    free(pmpls->mpls_label_stack);
 
     break;
   default:
