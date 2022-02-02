@@ -3603,7 +3603,10 @@ void NF_mpls_label_stack(struct channels_list_entry *chptr, struct packet_ptrs *
       strcat(pmpls->mpls_label_stack, ",");
     }
     
-    labels_cicle[6] = {0};
+    int idx_1;
+    for (idx_1 = 0; idx_1 < 6; idx_1++) {
+      labels_cicle[idx_1] = 0;
+    }
 
     printf("MPLS_LABEL_STACK: %s\n", pmpls->mpls_label_stack);
     free(pmpls->mpls_label_stack);
