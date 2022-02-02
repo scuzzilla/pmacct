@@ -853,13 +853,14 @@ avro_value_t compose_avro_acct_data(u_int64_t wtc, u_int64_t wtc_2, u_int8_t flo
   }
   
   if (wtc_2 & COUNT_MPLS_LABEL_STACK) {
+    strcpy(misc_str, pmpls->mpls_label_stack);
     if (FALSE) {
       //compose_nfacctd_fwdstatus_avro_data(pnat->forwarding_status, value);
     }
     else {
-      printf("mpls_label_stack: %s\n", pmpls->mpls_label_stack); 
+      printf("mpls_label_stack: %s\n", misc_str); 
       pm_avro_check(avro_value_get_by_name(&value, "mpls_label_stack", &field, NULL));
-      pm_avro_check(avro_value_set_string(&field, pmpls->mpls_label_stack));
+      pm_avro_check(avro_value_set_string(&field, misc_str));
     }
   }
 
