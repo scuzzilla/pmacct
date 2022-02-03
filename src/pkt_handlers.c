@@ -3569,7 +3569,7 @@ void NF_mpls_label_stack(struct channels_list_entry *chptr, struct packet_ptrs *
 
     if (tpl->tpl[NF9_MPLS_LABEL_2].len == 3) {
       memset(&label_buf, 0, sizeof(label_buf));
-      pmpls->mpls_label_stack_section2 = decode_mpls_label(pptrs->f_data+tpl->tpl[NF9_MPLS_LABEL_1].off);
+      pmpls->mpls_label_stack_section2 = decode_mpls_label(pptrs->f_data+tpl->tpl[NF9_MPLS_LABEL_2].off);
       snprintf(label_buf, MAX_MPLS_LABEL_LEN, "%zu", pmpls->mpls_label_stack_section2);
       strcat(pmpls->mpls_label_stack, label_buf);
       strcat(pmpls->mpls_label_stack, ",");
