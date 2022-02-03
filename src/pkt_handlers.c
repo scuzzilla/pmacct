@@ -3573,7 +3573,6 @@ void NF_mpls_label_stack(struct channels_list_entry *chptr, struct packet_ptrs *
       pmpls->mpls_label_stack_section6 = decode_mpls_label(pptrs->f_data+tpl->tpl[NF9_MPLS_LABEL_6].off);
       pmpls->labels_cicle[5] = pmpls->mpls_label_stack_section6;
     }
-
     break;
   default:
     break;
