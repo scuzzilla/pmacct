@@ -513,6 +513,7 @@ struct pkt_stitching {
 #define MAX_BGP_EXT_COMMS       96
 #define MAX_BGP_LRG_COMMS       96
 #define MAX_BGP_ASPATH          128
+#define MAX_MPLS_LABELS         6
 
 struct extra_primitives {
   u_int16_t off_pkt_bgp_primitives;
@@ -586,7 +587,7 @@ struct pkt_mpls_primitives {
   u_int8_t mpls_stack_depth;
   
   /* MPLS stack - fields 70-75 */
-  char mpls_label_stack[128];
+  u_int32_t labels_cicle[MAX_MPLS_LABELS];
   u_int32_t mpls_top_label_stack_section;
   u_int32_t mpls_label_stack_section2;
   u_int32_t mpls_label_stack_section3;

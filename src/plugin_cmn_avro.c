@@ -855,32 +855,21 @@ avro_value_t compose_avro_acct_data(u_int64_t wtc, u_int64_t wtc_2, u_int8_t flo
   if (wtc_2 & COUNT_MPLS_LABEL_STACK) {
     #define MAX_MPLS_LABEL_STACK 128
     #define MAX_MPLS_LABEL_LEN   9
-    #define MAX_MPLS_LABELS      6
 
     static char mpls_label_stack[MAX_MPLS_LABEL_STACK];
     memset(&mpls_label_stack, 0, sizeof(mpls_label_stack));
     
-    static u_int32_t labels_cicle[MAX_MPLS_LABELS];
-    memset(&labels_cicle, 0, sizeof(labels_cicle));
-    
     static char label_buf[MAX_MPLS_LABEL_LEN];
     memset(&label_buf, 0, sizeof(label_buf));
 
-    labels_cicle[0] = pmpls->mpls_top_label_stack_section;
-    labels_cicle[1] = pmpls->mpls_label_stack_section2;
-    labels_cicle[2] = pmpls->mpls_label_stack_section3;
-    labels_cicle[3] = pmpls->mpls_label_stack_section4;
-    labels_cicle[4] = pmpls->mpls_label_stack_section5;
-    labels_cicle[5] = pmpls->mpls_label_stack_section6;
-
-    snprintf(label_buf, MAX_MPLS_LABEL_LEN, "%zu", labels_cicle[0]);
+    snprintf(label_buf, MAX_MPLS_LABEL_LEN, "%zu", pmpls->labels_cicle[0]);
     strcpy(mpls_label_stack, label_buf);
     strcat(mpls_label_stack, ",");
 
     int idx_0;
     for(idx_0 = 1; idx_0 < MAX_MPLS_LABELS; idx_0++) {
       memset(&label_buf, 0, sizeof(label_buf));
-      snprintf(label_buf, MAX_MPLS_LABEL_LEN, "%zu", labels_cicle[idx_0]);
+      snprintf(label_buf, MAX_MPLS_LABEL_LEN, "%zu", pmpls->labels_cicle[idx_0]);
       strcat(mpls_label_stack, label_buf);
       strcat(mpls_label_stack, ",");
     }
