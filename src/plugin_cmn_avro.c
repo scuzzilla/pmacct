@@ -881,8 +881,8 @@ avro_value_t compose_avro_acct_data(u_int64_t wtc, u_int64_t wtc_2, u_int8_t flo
     for(idx_0 = 1; idx_0 < MAX_MPLS_LABELS; idx_0++) {
       memset(&label_buf, 0, sizeof(label_buf));
       snprintf(label_buf, MAX_MPLS_LABEL_LEN, "%zu", labels_cicle[idx_0]);
-      strcat(pmpls->mpls_label_stack, label_buf);
-      strcat(pmpls->mpls_label_stack, ",");
+      strcat(mpls_label_stack, label_buf);
+      strcat(mpls_label_stack, ",");
     }
 
     if (FALSE) {

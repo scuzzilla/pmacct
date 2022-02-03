@@ -3559,7 +3559,7 @@ void NF_mpls_label_stack(struct channels_list_entry *chptr, struct packet_ptrs *
       strcat(pmpls->mpls_label_stack, ",");
       //labels_cicle[0] = pmpls->mpls_top_label_stack_section;
     } else {
-      printf("NF9_MPLS_LABEL_1\n");
+      //printf("NF9_MPLS_LABEL_1\n");
       memset(&label_buf, 0, sizeof(label_buf));
       pmpls->mpls_top_label_stack_section = 0;
       snprintf(label_buf, MAX_MPLS_LABEL_LEN, "%zu", pmpls->mpls_top_label_stack_section);
@@ -3575,7 +3575,7 @@ void NF_mpls_label_stack(struct channels_list_entry *chptr, struct packet_ptrs *
       strcat(pmpls->mpls_label_stack, ",");
       //labels_cicle[1] = pmpls->mpls_label_stack_section2;
     } else {
-      printf("NF9_MPLS_LABEL_2\n");
+      //printf("NF9_MPLS_LABEL_2\n");
       memset(&label_buf, 0, sizeof(label_buf));
       pmpls->mpls_label_stack_section2 = 0;
       snprintf(label_buf, MAX_MPLS_LABEL_LEN, "%zu", pmpls->mpls_label_stack_section2);
@@ -3590,7 +3590,7 @@ void NF_mpls_label_stack(struct channels_list_entry *chptr, struct packet_ptrs *
       strcat(pmpls->mpls_label_stack, ",");
       //labels_cicle[2] = pmpls->mpls_label_stack_section3;
     } else {
-      printf("NF9_MPLS_LABEL_3\n");
+      //printf("NF9_MPLS_LABEL_3\n");
       memset(&label_buf, 0, sizeof(label_buf));
       pmpls->mpls_label_stack_section3 = 0;
       snprintf(label_buf, MAX_MPLS_LABEL_LEN, "%zu", pmpls->mpls_label_stack_section3);
@@ -3605,7 +3605,7 @@ void NF_mpls_label_stack(struct channels_list_entry *chptr, struct packet_ptrs *
       strcat(pmpls->mpls_label_stack, ",");
       //labels_cicle[3] = pmpls->mpls_label_stack_section4;
     } else {
-      printf("NF9_MPLS_LABEL_4\n");
+      //printf("NF9_MPLS_LABEL_4\n");
       memset(&label_buf, 0, sizeof(label_buf));
       pmpls->mpls_label_stack_section4 = 0;
       snprintf(label_buf, MAX_MPLS_LABEL_LEN, "%zu", pmpls->mpls_label_stack_section4);
@@ -3620,7 +3620,7 @@ void NF_mpls_label_stack(struct channels_list_entry *chptr, struct packet_ptrs *
       strcat(pmpls->mpls_label_stack, ",");
       //labels_cicle[4] = pmpls->mpls_label_stack_section5;
     } else {
-      printf("NF9_MPLS_LABEL_5\n");
+      //printf("NF9_MPLS_LABEL_5\n");
       memset(&label_buf, 0, sizeof(label_buf));
       pmpls->mpls_label_stack_section5 = 0;
       snprintf(label_buf, MAX_MPLS_LABEL_LEN, "%zu", pmpls->mpls_label_stack_section5);
@@ -3635,7 +3635,7 @@ void NF_mpls_label_stack(struct channels_list_entry *chptr, struct packet_ptrs *
       strcat(pmpls->mpls_label_stack, ",");
       //labels_cicle[5] = pmpls->mpls_label_stack_section6;
     } else {
-      printf("NF9_MPLS_LABEL_6\n");
+      //printf("NF9_MPLS_LABEL_6\n");
       memset(&label_buf, 0, sizeof(label_buf));
       pmpls->mpls_label_stack_section6 = 0;
       snprintf(label_buf, MAX_MPLS_LABEL_LEN, "%zu", pmpls->mpls_label_stack_section6);
