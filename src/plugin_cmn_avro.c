@@ -1655,7 +1655,7 @@ int compose_nfacctd_mpls_label_stack_data(u_int32_t *labels_cycle, char *label_b
       if (strcmp(label_buff, "0") != 0) {
         snprintf(idx_buff, 2, "%zu", idx_0);
         strcat("-", label_buff);
-        strcat(idx_buff, idx_buff);
+        strcat(idx_buff, label_buff);
         if (avro_value_append(&v_type_array, &v_type_string, NULL) == 0) {
           avro_value_set_string(&v_type_string, label_buff);
         }
