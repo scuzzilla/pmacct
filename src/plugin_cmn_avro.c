@@ -235,7 +235,7 @@ avro_schema_t p_avro_schema_build_acct_data(u_int64_t wtc, u_int64_t wtc_2)
   }
   
   if (wtc_2 & COUNT_MPLS_LABEL_STACK) {
-    if (config.nfacctd_mpls_label_stack_as_array)) {
+    if (config.nfacctd_mpls_label_stack_as_array) {
       //TODO
     }
     else {
@@ -862,12 +862,12 @@ avro_value_t compose_avro_acct_data(u_int64_t wtc, u_int64_t wtc_2, u_int8_t flo
     char label_buf[MAX_MPLS_LABEL_LEN];
     memset(&label_buf, 0, sizeof(label_buf));
 
-    snprintf(label_buf, MAX_MPLS_LABEL_LEN, "%zu", pmpls->labels_cicle[0]);
-    strcpy(mpls_label_stack, label_buf);
-    strcat(mpls_label_stack, ",");
+    //snprintf(label_buf, MAX_MPLS_LABEL_LEN, "%zu", pmpls->labels_cicle[0]);
+    //strcpy(mpls_label_stack, label_buf);
+    //strcat(mpls_label_stack, ",");
 
     int idx_0;
-    for(idx_0 = 1; idx_0 < MAX_MPLS_LABELS; idx_0++) {
+    for(idx_0 = 0; idx_0 < MAX_MPLS_LABELS; idx_0++) {
       memset(&label_buf, 0, sizeof(label_buf));
       snprintf(label_buf, MAX_MPLS_LABEL_LEN, "%zu", pmpls->labels_cicle[idx_0]);
       strcat(mpls_label_stack, label_buf);
