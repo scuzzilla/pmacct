@@ -332,6 +332,16 @@ void compose_json(u_int64_t wtc, u_int64_t wtc_2)
     idx++;
   }
 
+  if (wtc_2 & COUNT_MPLS_LABEL_STACK) {
+    if (config.nfacctd_mpls_label_stack_encode_as_array) {
+      //cjhandler[idx] = ;
+    }
+    else {
+      cjhandler[idx] = compose_json_nfacctd_mpls_label_stack;
+    }
+    idx++;
+  }
+
   if (wtc & COUNT_IP_PROTO) {
     cjhandler[idx] = compose_json_proto;
     idx++;
@@ -945,6 +955,25 @@ void compose_json_nfacctd_fwdstatus(json_t *obj, struct chained_cache *cc)
 
   sprintf(misc_str, "%u", cc->pnat->forwarding_status);
   json_object_set_new_nocheck(obj, "forwarding_status", json_string(misc_str));
+}
+
+void compose_json_nfacctd_mpls_label_stack(json_t *obj, struct chained_cache *cc)
+{
+  const int MAX_MPLS_LABEL_STACK = 128;
+  char mpls_label_stack[MAX_MPLS_LABEL_STACK];
+  char label_buf[MAX_MPLS_LABEL_LEN];
+    
+  memset(&mpls_label_stack, 0, sizeof(mpls_label_stack));
+
+  int idx_0;
+  for(idx_0 = 0; idx_0 < MAX_MPLS_LABELS; idx_0++) {
+    memset(&label_buf, 0, sizeof(label_buf));
+    snprintf(label_buf, MAX_MPLS_LABEL_LEN, "%zu", pmpls->labels_cycle[idx_0]);
+    strcat(mpls_label_stack, label_buf);
+    strcat(mpls_label_stack, ",");
+  }
+
+  json_object_set_new_nocheck(obj, "mpls_label_stack", json_string(mpls_label_stack));
 }
 
 void compose_json_proto(json_t *obj, struct chained_cache *cc)
