@@ -857,27 +857,23 @@ avro_value_t compose_avro_acct_data(u_int64_t wtc, u_int64_t wtc_2, u_int8_t flo
     const int MAX_MPLS_LABEL_LEN = 9;
 
     char mpls_label_stack[MAX_MPLS_LABEL_STACK];
-    memset(&mpls_label_stack, 0, sizeof(mpls_label_stack));
-    
     char label_buf[MAX_MPLS_LABEL_LEN];
+    
+    memset(&mpls_label_stack, 0, sizeof(mpls_label_stack));
     memset(&label_buf, 0, sizeof(label_buf));
-
-    //snprintf(label_buf, MAX_MPLS_LABEL_LEN, "%zu", pmpls->labels_cicle[0]);
-    //strcpy(mpls_label_stack, label_buf);
-    //strcat(mpls_label_stack, ",");
-
-    int idx_0;
-    for(idx_0 = 0; idx_0 < MAX_MPLS_LABELS; idx_0++) {
-      memset(&label_buf, 0, sizeof(label_buf));
-      snprintf(label_buf, MAX_MPLS_LABEL_LEN, "%zu", pmpls->labels_cicle[idx_0]);
-      strcat(mpls_label_stack, label_buf);
-      strcat(mpls_label_stack, ",");
-    }
 
     if (config.nfacctd_mpls_label_stack_as_array) {
       //TODO
     }
     else {
+      int idx_0;
+      for(idx_0 = 0; idx_0 < MAX_MPLS_LABELS; idx_0++) {
+        memset(&label_buf, 0, sizeof(label_buf));
+        snprintf(label_buf, MAX_MPLS_LABEL_LEN, "%zu", pmpls->labels_cicle[idx_0]);
+        strcat(mpls_label_stack, label_buf);
+        strcat(mpls_label_stack, ",");
+      }
+
       pm_avro_check(avro_value_get_by_name(&value, "mpls_label_stack", &field, NULL));
       pm_avro_check(avro_value_set_string(&field, mpls_label_stack));
     }
