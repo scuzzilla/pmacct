@@ -1638,7 +1638,7 @@ int compose_nfacctd_fwdstatus_avro_data(size_t fwdstatus_decimal, avro_value_t v
 }
 
 
-compose_nfacctd_mpls_label_stack_data(u_int32_t labels_cicle[], char *mpls_label_stack, char *label_buf, avro_value_t v_type_record);
+compose_nfacctd_mpls_label_stack_data(u_int32_t labels_cicle[], char *mpls_label_stack, char *label_buf, avro_value_t v_type_record)
 {
   avro_value_t v_type_array, v_type_string;
 
