@@ -1645,7 +1645,7 @@ int compose_nfacctd_mpls_label_stack_data(u_int32_t *labels_cicle, char *mpls_la
   size_t idx_0;
   for (idx_0 = 0; idx_0 < MAX_MPLS_LABELS; idx_0++) {
     memset(&label_buf, 0, sizeof(label_buf));
-    snprintf(label_buf, 9, "%zu", *(labels_cicle + idx_0);
+    snprintf(label_buf, 9, "%zu", *(labels_cicle + idx_0));
     strcat(mpls_label_stack, label_buf);
     if (avro_value_get_by_name(&v_type_record, "mpls_label_stack", &v_type_array, NULL) == 0) {
       if (strcmp(mpls_label_stack, "0") != 0) {
