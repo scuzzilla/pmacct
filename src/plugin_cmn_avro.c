@@ -853,13 +853,13 @@ avro_value_t compose_avro_acct_data(u_int64_t wtc, u_int64_t wtc_2, u_int8_t flo
   }
   
   if (wtc_2 & COUNT_MPLS_LABEL_STACK) {
-    int MAX_MPLS_LABEL_STACK = 128;
-    int MAX_MPLS_LABEL_LEN = 9;
+    const int MAX_MPLS_LABEL_STACK = 128;
+    const int MAX_MPLS_LABEL_LEN = 9;
 
-    static char mpls_label_stack[MAX_MPLS_LABEL_STACK];
+    char mpls_label_stack[MAX_MPLS_LABEL_STACK];
     memset(&mpls_label_stack, 0, sizeof(mpls_label_stack));
     
-    static char label_buf[MAX_MPLS_LABEL_LEN];
+    char label_buf[MAX_MPLS_LABEL_LEN];
     memset(&label_buf, 0, sizeof(label_buf));
 
     snprintf(label_buf, MAX_MPLS_LABEL_LEN, "%zu", pmpls->labels_cicle[0]);
