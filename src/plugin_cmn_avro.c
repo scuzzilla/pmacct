@@ -1643,7 +1643,7 @@ int compose_nfacctd_mpls_label_stack_data(u_int32_t *labels_cycle, char *label_b
   printf("compose_nfacctd_mpls_label_stack_data\n");
   avro_value_t v_type_array, v_type_string;
   char label_buff[9];
-  char idx_buf[2];
+  char idx_buff[2];
 
   size_t idx_0;
   for (idx_0 = 0; idx_0 < MAX_MPLS_LABELS; idx_0++) {
