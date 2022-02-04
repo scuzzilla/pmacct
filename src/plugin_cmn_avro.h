@@ -55,7 +55,7 @@ extern int compose_label_avro_data_ipfix(char *, avro_value_t);
 extern int compose_label_avro_data_bxp(char *, avro_value_t);
 extern int compose_tcpflags_avro_data(size_t, avro_value_t);
 extern int compose_nfacctd_fwdstatus_avro_data(size_t, avro_value_t);
-extern int compose_nfacctd_mpls_label_stack_data(u_int32_t *, char *, char *, avro_value_t);
+extern int compose_nfacctd_mpls_label_stack_data(u_int32_t *, char *, avro_value_t);
 
 extern void pm_avro_exit_gracefully(int);
 
