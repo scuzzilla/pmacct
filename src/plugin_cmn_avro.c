@@ -236,7 +236,7 @@ avro_schema_t p_avro_schema_build_acct_data(u_int64_t wtc, u_int64_t wtc_2)
   
   if (wtc_2 & COUNT_MPLS_LABEL_STACK) {
     if (config.nfacctd_mpls_label_stack_as_array) {
-      //TODO
+      compose_nfacctd_mpls_label_stack_schema(schema);
     }
     else {
       avro_schema_record_field_append(schema, "mpls_label_stack", avro_schema_string());
@@ -863,8 +863,7 @@ avro_value_t compose_avro_acct_data(u_int64_t wtc, u_int64_t wtc_2, u_int8_t flo
     memset(&label_buf, 0, sizeof(label_buf));
 
     if (config.nfacctd_mpls_label_stack_as_array) {
-      //TODO
-    }
+      compose_nfacctd_mpls_label_stack_data(pmpls->label_cicle, mpls_label_stack, label_buf, value);
     else {
       int idx_0;
       for(idx_0 = 0; idx_0 < MAX_MPLS_LABELS; idx_0++) {
@@ -1457,6 +1456,19 @@ void compose_tcpflags_avro_schema(avro_schema_t sc_type_record)
   avro_schema_decref(sc_type_string);
 }
 
+
+void compose_nfacctd_mpls_label_stack_schema(avro_schema_t sc_type_record)
+{
+  sc_type_string = avro_schema_string();
+  sc_type_array = avro_schema_array(sc_type_string);
+  avro_schema_record_field_append(sc_type_record, "mpls_label_stack", sc_type_array);
+
+  /* free-up memory */
+  avro_schema_decref(sc_type_array);
+  avro_schema_decref(sc_type_string);
+}
+
+
 void compose_nfacctd_fwdstatus_avro_schema(avro_schema_t sc_type_record)
 {
   sc_type_string = avro_schema_string();
@@ -1620,6 +1632,28 @@ int compose_nfacctd_fwdstatus_avro_data(size_t fwdstatus_decimal, avro_value_t v
   
   /* free-up memory */
   cdada_list_destroy(ll);
+
+  return 0;
+}
+
+
+compose_nfacctd_mpls_label_stack_data(u_int32_t labels_cicle[], char *mpls_label_stack, char *label_buf, avro_value_t v_type_record);
+{
+  avro_value_t v_type_array, v_type_string;
+
+  size_t idx_0;
+  for (idx_0 = 0; idx_0 < MAX_MPLS_LABELS; idx_0++) {
+    memset(&label_buf, 0, sizeof(label_buf));
+    snprintf(label_buf, MAX_MPLS_LABEL_LEN, "%zu", pmpls->labels_cicle[idx_0]);
+    strcat(mpls_label_stack, label_buf);
+    if (avro_value_get_by_name(&v_type_record, "mpls_label_stack", &v_type_array, NULL) == 0) {
+      if (strcmp(mpls_label_stack, "0") != 0) {
+        if (avro_value_append(&v_type_array, &v_type_string, NULL) == 0) {
+          avro_value_set_string(&v_type_string, mpls_label_stack);
+        }
+      }
+    }
+  }
 
   return 0;
 }
