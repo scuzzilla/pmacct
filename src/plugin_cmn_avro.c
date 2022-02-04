@@ -863,7 +863,8 @@ avro_value_t compose_avro_acct_data(u_int64_t wtc, u_int64_t wtc_2, u_int8_t flo
     memset(&label_buf, 0, sizeof(label_buf));
 
     if (config.nfacctd_mpls_label_stack_as_array) {
-      compose_nfacctd_mpls_label_stack_data(pmpls->label_cicle, mpls_label_stack, label_buf, value);
+      compose_nfacctd_mpls_label_stack_data(pmpls->labels_cicle, mpls_label_stack, label_buf, value);
+    } 
     else {
       int idx_0;
       for(idx_0 = 0; idx_0 < MAX_MPLS_LABELS; idx_0++) {
