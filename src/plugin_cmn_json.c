@@ -968,7 +968,7 @@ void compose_json_nfacctd_mpls_label_stack(json_t *obj, struct chained_cache *cc
   int idx_0;
   for(idx_0 = 0; idx_0 < MAX_MPLS_LABELS; idx_0++) {
     memset(&label_buf, 0, sizeof(label_buf));
-    snprintf(label_buf, MAX_MPLS_LABEL_LEN, "%zu", pmpls->labels_cycle[idx_0]);
+    snprintf(label_buf, MAX_MPLS_LABEL_LEN, "%zu", cc->pmpls->labels_cycle[idx_0]);
     strcat(mpls_label_stack, label_buf);
     strcat(mpls_label_stack, ",");
   }
