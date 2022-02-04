@@ -35,7 +35,7 @@ extern compose_json_handler cjhandler[N_PRIMITIVES];
 extern void compose_json_map_label(json_t *, struct chained_cache *);
 extern void compose_json_array_tcpflags(json_t *, struct chained_cache *);
 extern void compose_json_string_nfacctd_fwdstatus(json_t *, struct chained_cache *);
-extern void compose_json_mpls_label_stack(json_t *, struct chained_cache *);
+extern void compose_json_array_nfacctd_mpls_label_stack(json_t *, struct chained_cache *);
 extern json_t *compose_label_json_data(cdada_list_t *, int);
 extern json_t *compose_tcpflags_json_data(cdada_list_t *, int);
 extern json_t *compose_nfacctd_fwdstatus_json_data(size_t, cdada_list_t *, int);

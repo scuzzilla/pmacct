@@ -334,7 +334,7 @@ void compose_json(u_int64_t wtc, u_int64_t wtc_2)
 
   if (wtc_2 & COUNT_MPLS_LABEL_STACK) {
     if (config.nfacctd_mpls_label_stack_encode_as_array) {
-      //cjhandler[idx] = ;
+      cjhandler[idx] = compose_json_array_nfacctd_mpls_label_stack;
     }
     else {
       cjhandler[idx] = compose_json_nfacctd_mpls_label_stack;
@@ -1335,7 +1335,7 @@ void compose_json_string_nfacctd_fwdstatus(json_t *obj, struct chained_cache *cc
 }
 
 
-void compose_json_mpls_label_stack(json_t *obj, struct chained_cache *cc)
+void compose_json_array_nfacctd_mpls_label_stack(json_t *obj, struct chained_cache *cc)
 {
   json_t *root_l1 = compose_nfacctd_mpls_label_stack_json_data(cc->pmpls->labels_cycle);
 
