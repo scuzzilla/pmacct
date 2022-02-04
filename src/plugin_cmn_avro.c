@@ -235,8 +235,8 @@ avro_schema_t p_avro_schema_build_acct_data(u_int64_t wtc, u_int64_t wtc_2)
   }
   
   if (wtc_2 & COUNT_MPLS_LABEL_STACK) {
-    if (FALSE) {
-      //compose_nfacctd_fwdstatus_avro_schema(schema);
+    if (config.nfacctd_mpls_label_stack_as_array)) {
+      //TODO
     }
     else {
       avro_schema_record_field_append(schema, "mpls_label_stack", avro_schema_string());
@@ -874,11 +874,10 @@ avro_value_t compose_avro_acct_data(u_int64_t wtc, u_int64_t wtc_2, u_int8_t flo
       strcat(mpls_label_stack, ",");
     }
 
-    if (FALSE) {
-      //compose_nfacctd_fwdstatus_avro_data(pnat->forwarding_status, value);
+    if (config.nfacctd_mpls_label_stack_as_array) {
+      //TODO
     }
     else {
-      printf("[AVRO]-mpls_label_stack: %s\n", mpls_label_stack); 
       pm_avro_check(avro_value_get_by_name(&value, "mpls_label_stack", &field, NULL));
       pm_avro_check(avro_value_set_string(&field, mpls_label_stack));
     }
