@@ -235,7 +235,7 @@ avro_schema_t p_avro_schema_build_acct_data(u_int64_t wtc, u_int64_t wtc_2)
   }
   
   if (wtc_2 & COUNT_MPLS_LABEL_STACK) {
-    if (config.nfacctd_mpls_label_stack_as_array) {
+    if (config.nfacctd_mpls_label_stack_encode_as_array) {
       compose_nfacctd_mpls_label_stack_schema(schema);
     }
     else {
@@ -862,7 +862,7 @@ avro_value_t compose_avro_acct_data(u_int64_t wtc, u_int64_t wtc_2, u_int8_t flo
     memset(&mpls_label_stack, 0, sizeof(mpls_label_stack));
     memset(&label_buf, 0, sizeof(label_buf));
 
-    if (config.nfacctd_mpls_label_stack_as_array) {
+    if (config.nfacctd_mpls_label_stack_encode_as_array) {
       compose_nfacctd_mpls_label_stack_data(pmpls->labels_cicle, mpls_label_stack, label_buf, value);
     } 
     else {
