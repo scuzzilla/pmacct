@@ -863,7 +863,7 @@ avro_value_t compose_avro_acct_data(u_int64_t wtc, u_int64_t wtc_2, u_int8_t flo
     memset(&label_buf, 0, sizeof(label_buf));
 
     if (config.nfacctd_mpls_label_stack_as_array) {
-      compose_nfacctd_mpls_label_stack_data(pmpls->labels_cicle, mpls_label_stack, label_buf, value);
+      compose_nfacctd_mpls_label_stack_data(mpls_label_stack, label_buf, value);
     } 
     else {
       int idx_0;
@@ -1638,14 +1638,14 @@ int compose_nfacctd_fwdstatus_avro_data(size_t fwdstatus_decimal, avro_value_t v
 }
 
 
-compose_nfacctd_mpls_label_stack_data(u_int32_t labels_cicle[], char *mpls_label_stack, char *label_buf, avro_value_t v_type_record)
+compose_nfacctd_mpls_label_stack_data(char *mpls_label_stack, char *label_buf, avro_value_t v_type_record)
 {
   avro_value_t v_type_array, v_type_string;
 
   size_t idx_0;
   for (idx_0 = 0; idx_0 < MAX_MPLS_LABELS; idx_0++) {
     memset(&label_buf, 0, sizeof(label_buf));
-    snprintf(label_buf, MAX_MPLS_LABEL_LEN, "%zu", pmpls->labels_cicle[idx_0]);
+    snprintf(label_buf, 9, "%zu", pmpls->labels_cicle[idx_0]);
     strcat(mpls_label_stack, label_buf);
     if (avro_value_get_by_name(&v_type_record, "mpls_label_stack", &v_type_array, NULL) == 0) {
       if (strcmp(mpls_label_stack, "0") != 0) {
