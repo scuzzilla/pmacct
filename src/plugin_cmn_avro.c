@@ -853,19 +853,16 @@ avro_value_t compose_avro_acct_data(u_int64_t wtc, u_int64_t wtc_2, u_int8_t flo
   }
   
   if (wtc_2 & COUNT_MPLS_LABEL_STACK) {
-    const int MAX_MPLS_LABEL_STACK = 128;
-    const int MAX_MPLS_LABEL_LEN = 9;
-
-    char mpls_label_stack[MAX_MPLS_LABEL_STACK];
-    char label_buf[MAX_MPLS_LABEL_LEN];
-    
-    memset(&mpls_label_stack, 0, sizeof(mpls_label_stack));
-    memset(&label_buf, 0, sizeof(label_buf));
-
     if (config.nfacctd_mpls_label_stack_encode_as_array) {
       compose_nfacctd_mpls_label_stack_data(pmpls->labels_cycle, value);
     } 
     else {
+      const int MAX_MPLS_LABEL_STACK = 128;
+      char mpls_label_stack[MAX_MPLS_LABEL_STACK];
+      char label_buf[MAX_MPLS_LABEL_LEN];
+    
+      memset(&mpls_label_stack, 0, sizeof(mpls_label_stack));
+
       int idx_0;
       for(idx_0 = 0; idx_0 < MAX_MPLS_LABELS; idx_0++) {
         memset(&label_buf, 0, sizeof(label_buf));
@@ -1640,19 +1637,20 @@ int compose_nfacctd_fwdstatus_avro_data(size_t fwdstatus_decimal, avro_value_t v
 
 int compose_nfacctd_mpls_label_stack_data(u_int32_t *labels_cycle, avro_value_t v_type_record)
 {
-  char label_buf[15];
-  char idx_buf[5];
+  const int MAX_IDX_LEN = 1;
+  char label_buf[MAX_MPLS_LABEL_LEN];
+  char idx_buf[MAX_IDX_LEN];
 
   avro_value_t v_type_array, v_type_string;
 
   size_t idx_0;
   for (idx_0 = 0; idx_0 < MAX_MPLS_LABELS; idx_0++) {
     memset(&label_buf, 0, sizeof(label_buf));
-    snprintf(label_buf, 15, "%zu", *(labels_cycle + idx_0));
+    snprintf(label_buf, MAX_MPLS_LABEL_LEN, "%zu", *(labels_cycle + idx_0));
     if (avro_value_get_by_name(&v_type_record, "mpls_label_stack", &v_type_array, NULL) == 0) {
       if (strcmp(label_buf, "0") != 0) {
         memset(&idx_buf, 0, sizeof(idx_buf));
-        snprintf(idx_buf, 5, "%zu", idx_0);
+        snprintf(idx_buf, MAX_IDX_LEN, "%zu", idx_0);
         strcat(label_buf, "-");
         strcat(label_buf, idx_buf);
         if (avro_value_append(&v_type_array, &v_type_string, NULL) == 0) {

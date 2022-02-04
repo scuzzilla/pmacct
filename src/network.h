@@ -513,7 +513,10 @@ struct pkt_stitching {
 #define MAX_BGP_EXT_COMMS       96
 #define MAX_BGP_LRG_COMMS       96
 #define MAX_BGP_ASPATH          128
+
+/* MPLS */
 #define MAX_MPLS_LABELS         6
+#define MAX_MPLS_LABEL_LEN      16
 
 struct extra_primitives {
   u_int16_t off_pkt_bgp_primitives;
