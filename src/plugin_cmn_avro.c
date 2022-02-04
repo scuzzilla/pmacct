@@ -1637,7 +1637,7 @@ int compose_nfacctd_fwdstatus_avro_data(size_t fwdstatus_decimal, avro_value_t v
 
 int compose_nfacctd_mpls_label_stack_data(u_int32_t *labels_cycle, avro_value_t v_type_record)
 {
-  const int MAX_IDX_LEN = 2;
+  const int MAX_IDX_LEN = 4;
   char label_buf[MAX_MPLS_LABEL_LEN];
   char idx_buf[MAX_IDX_LEN];
 
