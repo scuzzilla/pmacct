@@ -1428,10 +1428,10 @@ json_t *compose_nfacctd_mpls_label_stack_json_data(u_int32_t *labels_cycle)
   for (idx_0 = 0; idx_0 < MAX_MPLS_LABELS; idx_0++) {
     memset(&label_buf, 0, sizeof(label_buf));
     snprintf(label_buf, MAX_MPLS_LABEL_LEN, "%zu", *(labels_cycle + idx_0));
-    if (strncmp("0", label_buf, 1)) {
+    if (strncmp("0", label_buf, MAX_MPLS_LABEL_LEN)) {
       memset(&idx_buf, 0, sizeof(idx_buf));
       snprintf(idx_buf, MAX_IDX_LEN, "%zu", idx_0);
-      strncat(label_buf, "-", 1);
+      strncat(label_buf, "-", MAX_MPLS_LABEL_LEN);
       strncat(label_buf, idx_buf, MAX_IDX_LEN);
       j_str_tmp = json_string(label_buf);
       json_array_append(root, j_str_tmp); 
