@@ -1648,7 +1648,7 @@ int compose_nfacctd_mpls_label_stack_data(u_int32_t *labels_cycle, avro_value_t 
     memset(&label_buf, 0, sizeof(label_buf));
     snprintf(label_buf, MAX_MPLS_LABEL_LEN, "%zu", *(labels_cycle + idx_0));
     if (avro_value_get_by_name(&v_type_record, "mpls_label_stack", &v_type_array, NULL) == 0) {
-      if (strncmp("0", label_buf)) {
+      if (strncmp("0", label_buf, 1)) {
         memset(&idx_buf, 0, sizeof(idx_buf));
         snprintf(idx_buf, MAX_IDX_LEN, "%zu", idx_0);
         strncat(label_buf, "-", 1);
