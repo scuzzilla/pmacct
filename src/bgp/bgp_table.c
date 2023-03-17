@@ -243,131 +243,70 @@ void bgp_node_vector_debug(struct bgp_node_vector *bnv, struct prefix *p)
 }
 
 /* Find matched prefix. */
-void bgp_node_match(const struct bgp_table *table, struct prefix *p, struct bgp_peer *peer,
-                    u_int32_t (*modulo_func)(struct bgp_peer *, struct bgp_info *, path_id_t *, int),
-                    int (*cmp_func)(struct bgp_info *, struct node_match_cmp_term2 *),
-                    struct node_match_cmp_term2 *nmct2, struct bgp_node_vector *bnv,
-                    struct bgp_node **result_node, struct bgp_info **result_info) {
+void
+bgp_node_match (const struct bgp_table *table, struct prefix *p, struct bgp_peer *peer,
+		u_int32_t (*modulo_func)(struct bgp_peer *, struct bgp_info *, path_id_t *, int),
+		int (*cmp_func)(struct bgp_info *, struct node_match_cmp_term2 *),
+		struct node_match_cmp_term2 *nmct2, struct bgp_node_vector *bnv,
+		struct bgp_node **result_node, struct bgp_info **result_info)
+{
   struct bgp_misc_structs *bms;
   struct bgp_node *node, *matched_node;
-  struct bgp_info *info, *matched_info;
-  u_int32_t local_modulo, modulo_max;
+  struct bgp_info *info = NULL;
+  struct bgp_info *matched_info;
+  u_int32_t modulo, modulo_idx, local_modulo, modulo_max;
 
   if (!table || !peer || !cmp_func) return;
 
   bms = bgp_select_misc_db(peer->type);
   if (!bms) return;
 
-  if (bms->table_per_peer_hash == BGP_ASPATH_HASH_PATHID) {
-    modulo_max = bms->table_per_peer_buckets;
-  } else {
-    modulo_max = 1;
-  }
+  /* XXX: see https://github.com/pmacct/pmacct/pull/78 */
+  if (bms->table_per_peer_hash == BGP_ASPATH_HASH_PATHID) modulo_max = bms->table_per_peer_buckets;
+  else modulo_max = 1;
+
+  if (modulo_func) modulo = modulo_func(peer, info, NULL, modulo_max);
+  else modulo = 0;
 
   matched_node = NULL;
   matched_info = NULL;
   node = table->top;
   if (bnv) bnv->entries = 0;
 
+  /* Walk down tree.  If there is matched route then store it to matched. */
   while (node && node->p.prefixlen <= p->prefixlen && prefix_match(&node->p, p)) {
-    for (local_modulo = 0; local_modulo < modulo_max; local_modulo++) {
-      u_int32_t modulo = (modulo_func) ? modulo_func(peer, info, NULL, modulo_max) : 0;
+    for (local_modulo = modulo, modulo_idx = 0; modulo_idx < modulo_max; local_modulo++, modulo_idx++) {
+      for (info = node->info[local_modulo]; info; info = info->next) {
+	if (!cmp_func(info, nmct2)) {
+	  matched_node = node;
+	  matched_info = info;
 
-      for (info = node->info[local_modulo + modulo]; info; info = info->next) {
-        if (!cmp_func(info, nmct2)) {
-          matched_node = node;
-          matched_info = info;
+	  if (bnv) {
+	    bnv->v[bnv->entries].p = &node->p;
+	    bnv->v[bnv->entries].info = info;
+	    bnv->entries++;
+	  }
 
-          if (bnv) {
-            bnv->v[bnv->entries].p = &node->p;
-            bnv->v[bnv->entries].info = info;
-            bnv->entries++;
-          }
-
-          if (node->p.prefixlen == p->prefixlen) break;
-        }
+	  if (node->p.prefixlen == p->prefixlen) break;
+	}
       }
     }
 
     node = node->link[check_bit(&p->u.prefix, node->p.prefixlen)];
   }
 
-  if (config.debug && bnv) bgp_node_vector_debug(bnv, p);
+  if (config.debug && bnv) bgp_node_vector_debug(bnv, p); 
 
   if (matched_node) {
     (*result_node) = matched_node;
     (*result_info) = matched_info;
-    bgp_lock_node(peer, matched_node);
-  } else {
+    bgp_lock_node (peer, matched_node);
+  }
+  else {
     (*result_node) = NULL;
     (*result_info) = NULL;
   }
 }
-
-//void
-//bgp_node_match (const struct bgp_table *table, struct prefix *p, struct bgp_peer *peer,
-//		u_int32_t (*modulo_func)(struct bgp_peer *, struct bgp_info *, path_id_t *, int),
-//		int (*cmp_func)(struct bgp_info *, struct node_match_cmp_term2 *),
-//		struct node_match_cmp_term2 *nmct2, struct bgp_node_vector *bnv,
-//		struct bgp_node **result_node, struct bgp_info **result_info)
-//{
-//  struct bgp_misc_structs *bms;
-//  struct bgp_node *node, *matched_node;
-//  struct bgp_info *info = NULL;
-//  struct bgp_info *matched_info;
-//  u_int32_t modulo, modulo_idx, local_modulo, modulo_max;
-//
-//  if (!table || !peer || !cmp_func) return;
-//
-//  bms = bgp_select_misc_db(peer->type);
-//  if (!bms) return;
-//
-//  /* XXX: see https://github.com/pmacct/pmacct/pull/78 */
-//  if (bms->table_per_peer_hash == BGP_ASPATH_HASH_PATHID) modulo_max = bms->table_per_peer_buckets;
-//  else modulo_max = 1;
-//
-//  if (modulo_func) modulo = modulo_func(peer, info, NULL, modulo_max);
-//  else modulo = 0;
-//
-//  matched_node = NULL;
-//  matched_info = NULL;
-//  node = table->top;
-//  if (bnv) bnv->entries = 0;
-//
-//  /* Walk down tree.  If there is matched route then store it to matched. */
-//  while (node && node->p.prefixlen <= p->prefixlen && prefix_match(&node->p, p)) {
-//    for (local_modulo = modulo, modulo_idx = 0; modulo_idx < modulo_max; local_modulo++, modulo_idx++) {
-//      for (info = node->info[local_modulo]; info; info = info->next) {
-//	if (!cmp_func(info, nmct2)) {
-//	  matched_node = node;
-//	  matched_info = info;
-//
-//	  if (bnv) {
-//	    bnv->v[bnv->entries].p = &node->p;
-//	    bnv->v[bnv->entries].info = info;
-//	    bnv->entries++;
-//	  }
-//
-//	  if (node->p.prefixlen == p->prefixlen) break;
-//	}
-//      }
-//    }
-//
-//    node = node->link[check_bit(&p->u.prefix, node->p.prefixlen)];
-//  }
-//
-//  if (config.debug && bnv) bgp_node_vector_debug(bnv, p); 
-//
-//  if (matched_node) {
-//    (*result_node) = matched_node;
-//    (*result_info) = matched_info;
-//    bgp_lock_node (peer, matched_node);
-//  }
-//  else {
-//    (*result_node) = NULL;
-//    (*result_info) = NULL;
-//  }
-//}
 
 void
 bgp_node_match_ipv4 (const struct bgp_table *table, struct in_addr *addr, struct bgp_peer *peer,
