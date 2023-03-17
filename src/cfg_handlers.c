@@ -4347,7 +4347,7 @@ int cfg_key_bgp_daemon_table_per_peer_buckets(char *filename, char *name, char *
   int value, changes = 0;
 
   value = atoi(value_ptr);
-  if ((value <= 0) || (value > 128)) {
+  if ((value <= 0) || (value > 1024)) {
     Log(LOG_ERR, "WARN: [%s] 'bgp_table_per_peer_buckets' has to be in the range 1-128.\n", filename);
     return ERR;
   }
