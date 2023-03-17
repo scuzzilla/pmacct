@@ -245,14 +245,15 @@ void bgp_node_vector_debug(struct bgp_node_vector *bnv, struct prefix *p)
 /* Find matched prefix. */
 void
 bgp_node_match (const struct bgp_table *table, struct prefix *p, struct bgp_peer *peer,
-		u_int32_t (*modulo_func)(struct bgp_peer *, path_id_t *, int),
+		u_int32_t (*modulo_func)(struct bgp_peer *, struct bgp_info *, path_id_t *, int),
 		int (*cmp_func)(struct bgp_info *, struct node_match_cmp_term2 *),
 		struct node_match_cmp_term2 *nmct2, struct bgp_node_vector *bnv,
 		struct bgp_node **result_node, struct bgp_info **result_info)
 {
   struct bgp_misc_structs *bms;
   struct bgp_node *node, *matched_node;
-  struct bgp_info *info, *matched_info;
+  struct bgp_info *info = NULL;
+  struct bgp_info *matched_info;
   u_int32_t modulo, modulo_idx, local_modulo, modulo_max;
 
   if (!table || !peer || !cmp_func) return;
@@ -264,7 +265,7 @@ bgp_node_match (const struct bgp_table *table, struct prefix *p, struct bgp_peer
   if (bms->table_per_peer_hash == BGP_ASPATH_HASH_PATHID) modulo_max = bms->table_per_peer_buckets;
   else modulo_max = 1;
 
-  if (modulo_func) modulo = modulo_func(peer, NULL, modulo_max);
+  if (modulo_func) modulo = modulo_func(peer, info, NULL, modulo_max);
   else modulo = 0;
 
   matched_node = NULL;
@@ -309,7 +310,7 @@ bgp_node_match (const struct bgp_table *table, struct prefix *p, struct bgp_peer
 
 void
 bgp_node_match_ipv4 (const struct bgp_table *table, struct in_addr *addr, struct bgp_peer *peer,
-		     u_int32_t (*modulo_func)(struct bgp_peer *, path_id_t *, int),
+		     u_int32_t (*modulo_func)(struct bgp_peer *, struct bgp_info *, path_id_t *, int),
 		     int (*cmp_func)(struct bgp_info *, struct node_match_cmp_term2 *),
 		     struct node_match_cmp_term2 *nmct2, struct bgp_node_vector *bnv,
 		     struct bgp_node **result_node, struct bgp_info **result_info)
@@ -326,7 +327,7 @@ bgp_node_match_ipv4 (const struct bgp_table *table, struct in_addr *addr, struct
 
 void
 bgp_node_match_ipv6 (const struct bgp_table *table, struct in6_addr *addr, struct bgp_peer *peer,
-		     u_int32_t (*modulo_func)(struct bgp_peer *, path_id_t *, int),
+		     u_int32_t (*modulo_func)(struct bgp_peer *, struct bgp_info *, path_id_t *, int),
 		     int (*cmp_func)(struct bgp_info *, struct node_match_cmp_term2 *),
 		     struct node_match_cmp_term2 *nmct2, struct bgp_node_vector *bnv,
 		     struct bgp_node **result_node, struct bgp_info **result_info)
