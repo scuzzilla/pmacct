@@ -254,7 +254,8 @@ bgp_node_match (const struct bgp_table *table, struct prefix *p, struct bgp_peer
   struct bgp_node *node, *matched_node;
   struct bgp_info *info = NULL;
   struct bgp_info *matched_info;
-  u_int32_t modulo, modulo_idx, local_modulo, modulo_max;
+  //u_int32_t modulo, modulo_idx, local_modulo, modulo_max;
+  u_int32_t modulo, modulo_max;
   int ll_traversed_nodes; // Add a counter for traversed nodes
   int trie_traversed_nodes = 0; // Add a counter for traversed nodes
 
@@ -279,8 +280,9 @@ bgp_node_match (const struct bgp_table *table, struct prefix *p, struct bgp_peer
   while (node && node->p.prefixlen <= p->prefixlen && prefix_match(&node->p, p)) {
     trie_traversed_nodes++; // Add a counter for traversed nodes
     ll_traversed_nodes = 0; // Add a counter for traversed nodes
-    for (local_modulo = modulo, modulo_idx = 0; modulo_idx < modulo_max; local_modulo++, modulo_idx++) {
-      for (info = node->info[local_modulo]; info; info = info->next) {
+    //for (local_modulo = modulo, modulo_idx = 0; modulo_idx < modulo_max; local_modulo++, modulo_idx++) {
+      //for (info = node->info[local_modulo]; info; info = info->next) {
+      for (info = node->info[modulo]; info; info = info->next) {
         ll_traversed_nodes++; // Increment the counter for each traversed node
 	if (!cmp_func(info, nmct2)) {
 	  matched_node = node;
@@ -295,7 +297,7 @@ bgp_node_match (const struct bgp_table *table, struct prefix *p, struct bgp_peer
 	  if (node->p.prefixlen == p->prefixlen) break;
 	}
       }
-    }
+    //}
 
     node = node->link[check_bit(&p->u.prefix, node->p.prefixlen)];
   }
