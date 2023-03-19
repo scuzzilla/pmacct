@@ -135,9 +135,9 @@ route_common (struct prefix *n, struct prefix *p, struct prefix *new)
   for (i = 0; i < p->prefixlen / 8; i++)
     {
       if (np[i] == pp[i])
-	newp[i] = np[i];
+        newp[i] = np[i];
       else
-	break;
+        break;
     }
 
   new->prefixlen = i * 8;
@@ -147,10 +147,10 @@ route_common (struct prefix *n, struct prefix *p, struct prefix *new)
       diff = np[i] ^ pp[i];
       mask = 0x80;
       while (new->prefixlen < p->prefixlen && !(mask & diff))
-	{
-	  mask >>= 1;
-	  new->prefixlen++;
-	}
+        {
+          mask >>= 1;
+          new->prefixlen++;
+        }
       newp[i] = np[i] & maskbit[new->prefixlen % 8];
     }
 }
@@ -245,10 +245,10 @@ void bgp_node_vector_debug(struct bgp_node_vector *bnv, struct prefix *p)
 /* Find matched prefix. */
 void
 bgp_node_match (const struct bgp_table *table, struct prefix *p, struct bgp_peer *peer,
-		u_int32_t (*modulo_func)(struct bgp_peer *, struct bgp_info *, path_id_t *, int),
-		int (*cmp_func)(struct bgp_info *, struct node_match_cmp_term2 *),
-		struct node_match_cmp_term2 *nmct2, struct bgp_node_vector *bnv,
-		struct bgp_node **result_node, struct bgp_info **result_info)
+                u_int32_t (*modulo_func)(struct bgp_peer *, struct bgp_info *, path_id_t *, int),
+                int (*cmp_func)(struct bgp_info *, struct node_match_cmp_term2 *),
+                struct node_match_cmp_term2 *nmct2, struct bgp_node_vector *bnv,
+                struct bgp_node **result_node, struct bgp_info **result_info)
 {
   struct bgp_misc_structs *bms;
   struct bgp_node *node, *matched_node;
@@ -277,57 +277,49 @@ bgp_node_match (const struct bgp_table *table, struct prefix *p, struct bgp_peer
   if (bnv) bnv->entries = 0;
 
   /* Walk down tree.  If there is matched route then store it to matched. */
-  while (node && node->p.prefixlen <= p->prefixlen && prefix_match(&node->p, p)) {
+  while (node && node->p.prefixlen <= p->prefixlen) {
     trie_traversed_nodes++; // Add a counter for traversed nodes
     ll_traversed_nodes = 0; // Add a counter for traversed nodes
-    //for (local_modulo = modulo, modulo_idx = 0; modulo_idx < modulo_max; local_modulo++, modulo_idx++) {
-      //for (info = node->info[local_modulo]; info; info = info->next) {
-      if (prefix_match(&node->p, p)) {
+    if (prefix_match(&node->p, p)) {
       for (info = node->info[modulo]; info; info = info->next) {
         ll_traversed_nodes++; // Increment the counter for each traversed node
-	if (!cmp_func(info, nmct2)) {
-	  matched_node = node;
-	  matched_info = info;
+        if (!cmp_func(info, nmct2)) {
+          matched_node = node;
+          matched_info = info;
 
-	  if (bnv) {
-	    bnv->v[bnv->entries].p = &node->p;
-	    bnv->v[bnv->entries].info = info;
-	    bnv->entries++;
-	  }
-
-	  if (node->p.prefixlen == p->prefixlen) break;
+          if (bnv) {
+            bnv->v[bnv->entries].p = &node->p;
+            bnv->v[bnv->entries].info = info;
+            bnv->entries++;
+          }
+          if (matched_node) {
+            printf("MATCH - Number of linked-list nodes traversed: %d\n", ll_traversed_nodes); // Print the number of traversed nodes
+            //printf("MATCH - Number of trie-tree nodes traversed: %d\n", trie_traversed_nodes); // Print the number of traversed nodes
+            (*result_node) = matched_node;
+            (*result_info) = matched_info;
+            bgp_lock_node (peer, matched_node);
+          }
+          else {
+            printf("NO-MATCH - Number of linked-list nodes traversed: %d\n", ll_traversed_nodes); // Print the number of traversed nodes
+            //iprintf("NO-MATCH - Number of trie-tree nodes traversed: %d\n", trie_traversed_nodes); // Print the number of traversed nodes
+            (*result_node) = NULL;
+            (*result_info) = NULL;
+          }
           break;
-	}
+        }
       }
-      }
-    //}
-
+    }
     node = node->link[check_bit(&p->u.prefix, node->p.prefixlen)];
   }
-
-  if (config.debug && bnv) bgp_node_vector_debug(bnv, p); 
-
-  if (matched_node) {
-    printf("MATCH - Number of linked-list nodes traversed: %d\n", ll_traversed_nodes); // Print the number of traversed nodes
-    //printf("MATCH - Number of trie-tree nodes traversed: %d\n", trie_traversed_nodes); // Print the number of traversed nodes
-    (*result_node) = matched_node;
-    (*result_info) = matched_info;
-    bgp_lock_node (peer, matched_node);
-  }
-  else {
-    printf("NO-MATCH - Number of linked-list nodes traversed: %d\n", ll_traversed_nodes); // Print the number of traversed nodes
-    //iprintf("NO-MATCH - Number of trie-tree nodes traversed: %d\n", trie_traversed_nodes); // Print the number of traversed nodes
-    (*result_node) = NULL;
-    (*result_info) = NULL;
-  }
+  if (config.debug && bnv) bgp_node_vector_debug(bnv, p);
 }
 
 void
 bgp_node_match_ipv4 (const struct bgp_table *table, struct in_addr *addr, struct bgp_peer *peer,
-		     u_int32_t (*modulo_func)(struct bgp_peer *, struct bgp_info *, path_id_t *, int),
-		     int (*cmp_func)(struct bgp_info *, struct node_match_cmp_term2 *),
-		     struct node_match_cmp_term2 *nmct2, struct bgp_node_vector *bnv,
-		     struct bgp_node **result_node, struct bgp_info **result_info)
+                     u_int32_t (*modulo_func)(struct bgp_peer *, struct bgp_info *, path_id_t *, int),
+                     int (*cmp_func)(struct bgp_info *, struct node_match_cmp_term2 *),
+                     struct node_match_cmp_term2 *nmct2, struct bgp_node_vector *bnv,
+                     struct bgp_node **result_node, struct bgp_info **result_info)
 {
   struct prefix_ipv4 p;
 
@@ -341,10 +333,10 @@ bgp_node_match_ipv4 (const struct bgp_table *table, struct in_addr *addr, struct
 
 void
 bgp_node_match_ipv6 (const struct bgp_table *table, struct in6_addr *addr, struct bgp_peer *peer,
-		     u_int32_t (*modulo_func)(struct bgp_peer *, struct bgp_info *, path_id_t *, int),
-		     int (*cmp_func)(struct bgp_info *, struct node_match_cmp_term2 *),
-		     struct node_match_cmp_term2 *nmct2, struct bgp_node_vector *bnv,
-		     struct bgp_node **result_node, struct bgp_info **result_info)
+                     u_int32_t (*modulo_func)(struct bgp_peer *, struct bgp_info *, path_id_t *, int),
+                     int (*cmp_func)(struct bgp_info *, struct node_match_cmp_term2 *),
+                     struct node_match_cmp_term2 *nmct2, struct bgp_node_vector *bnv,
+                     struct bgp_node **result_node, struct bgp_info **result_info)
 {
   struct prefix_ipv6 p;
 
@@ -369,13 +361,13 @@ bgp_node_get (struct bgp_peer *peer, struct bgp_table *const table, struct prefi
   match = NULL;
   node = table->top;
   while (node && node->p.prefixlen <= p->prefixlen && 
-	 prefix_match (&node->p, p))
+         prefix_match (&node->p, p))
     {
       if (node->p.prefixlen == p->prefixlen)
-	{
-	  bgp_lock_node (peer, node);
-	  return node;
-	}
+        {
+          bgp_lock_node (peer, node);
+          return node;
+        }
       match = node;
       node = node->link[check_bit(&p->u.prefix, node->p.prefixlen)];
     }
@@ -384,9 +376,9 @@ bgp_node_get (struct bgp_peer *peer, struct bgp_table *const table, struct prefi
     {
       new = bgp_node_set (peer, table, p);
       if (match)
-	set_link (match, new);
+        set_link (match, new);
       else
-	table->top = new;
+        table->top = new;
     }
   else
     {
@@ -397,17 +389,17 @@ bgp_node_get (struct bgp_peer *peer, struct bgp_table *const table, struct prefi
       set_link (new, node);
 
       if (match)
-	set_link (match, new);
+        set_link (match, new);
       else
-	table->top = new;
+        table->top = new;
 
       if (new->p.prefixlen != p->prefixlen)
-	{
-	  match = new;
-	  new = bgp_node_set (peer, table, p);
-	  set_link (match, new);
-	  table->count++;
-	}
+        {
+          match = new;
+          new = bgp_node_set (peer, table, p);
+          set_link (match, new);
+          table->count++;
+        }
     }
   table->count++;
   bgp_lock_node (peer, new);
@@ -445,9 +437,9 @@ bgp_node_delete (struct bgp_peer *peer, struct bgp_node *node)
   if (parent)
     {
       if (parent->l_left == node)
-	parent->l_left = child;
+        parent->l_left = child;
       else
-	parent->l_right = child;
+        parent->l_right = child;
     }
   else
     node->table->top = child;
@@ -508,12 +500,12 @@ bgp_route_next (struct bgp_peer *peer, struct bgp_node *node)
   while (node->parent)
     {
       if (node->parent->l_left == node && node->parent->l_right)
-	{
-	  next = node->parent->l_right;
-	  bgp_lock_node (peer, next);
-	  bgp_unlock_node (peer, start);
-	  return next;
-	}
+        {
+          next = node->parent->l_right;
+          bgp_lock_node (peer, next);
+          bgp_unlock_node (peer, start);
+          return next;
+        }
       node = node->parent;
     }
   bgp_unlock_node (peer, start);
@@ -537,16 +529,16 @@ void bgp_table_free (struct bgp_table *rt)
   while (node)
     {
       if (node->l_left)
-	{
-	  node = node->l_left;
-	  continue;
-	}
+        {
+          node = node->l_left;
+          continue;
+        }
 
       if (node->l_right)
-	{
-	  node = node->l_right;
-	  continue;
-	}
+        {
+          node = node->l_right;
+          continue;
+        }
 
       tmp_node = node;
       node = node->parent;
@@ -556,16 +548,16 @@ void bgp_table_free (struct bgp_table *rt)
       bgp_node_free (tmp_node);
 
       if (node != NULL)
-	{
-	  if (node->l_left == tmp_node)
-	    node->l_left = NULL;
-	  else
-	    node->l_right = NULL;
-	}
+        {
+          if (node->l_left == tmp_node)
+            node->l_left = NULL;
+          else
+            node->l_right = NULL;
+        }
       else
-	{
-	  break;
-	}
+        {
+          break;
+        }
     }
  
   assert (rt->count == 0);
