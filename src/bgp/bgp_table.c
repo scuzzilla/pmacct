@@ -256,7 +256,7 @@ bgp_node_match (const struct bgp_table *table, struct prefix *p, struct bgp_peer
   struct bgp_info *matched_info;
   //u_int32_t modulo, modulo_idx, local_modulo, modulo_max;
   u_int32_t modulo, modulo_max;
-  //int ll_traversed_nodes; // Add a counter for traversed nodes
+  int ll_traversed_nodes; // Add a counter for traversed nodes
   //int trie_traversed_nodes = 0; // Add a counter for traversed nodes
 
   if (!table || !peer || !cmp_func) return;
@@ -281,7 +281,7 @@ bgp_node_match (const struct bgp_table *table, struct prefix *p, struct bgp_peer
   /* Walk down tree.  If there is matched route then store it to matched. */
   while (node && node->p.prefixlen <= p->prefixlen) {
     //trie_traversed_nodes++; // Add a counter for traversed nodes
-    //ll_traversed_nodes = 0; // Add a counter for traversed nodes
+    ll_traversed_nodes = 0; // Add a counter for traversed nodes
     if (prefix_match(&node->p, p)) {
       for (info = node->info[modulo]; info; info = info->next) {
         //ll_traversed_nodes++; // Increment the counter for each traversed node
@@ -295,7 +295,7 @@ bgp_node_match (const struct bgp_table *table, struct prefix *p, struct bgp_peer
             bnv->entries++;
           }
 
-          //printf("MATCH - Number of linked-list nodes traversed: %d\n", ll_traversed_nodes); // Print the number of traversed nodes
+          printf("MATCH - Number of linked-list nodes traversed: %d\n", ll_traversed_nodes); // Print the number of traversed nodes
           //printf("MATCH - Number of trie-tree nodes traversed: %d\n", trie_traversed_nodes); // Print the number of traversed nodes
           (*result_node) = matched_node;
           (*result_info) = matched_info;
