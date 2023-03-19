@@ -844,16 +844,16 @@ u_int32_t bgp_route_info_modulo_pathid(struct bgp_peer *peer, struct bgp_info *i
  if (path_id && *path_id) local_path_id = *path_id;
 
  // Prepare a buffer to store concatenated data for hashing
- //unsigned char buffer[sizeof(peer->id) + sizeof(peer->as) + sizeof(local_path_id) + sizeof(rd_t)];
- unsigned char buffer[sizeof(local_path_id) + sizeof(rd_t)];
+ unsigned char buffer[sizeof(peer->id) + sizeof(peer->as) + sizeof(local_path_id) + sizeof(rd_t)];
+ //unsigned char buffer[sizeof(local_path_id) + sizeof(rd_t)];
  size_t buffer_pos = 0;
 
  // Concatenate the BGP peer's ID, AS number, local_path_id, and RD into the buffer
- //memcpy(buffer + buffer_pos, &peer->id, sizeof(peer->id));
- //buffer_pos += sizeof(peer->id);
+ memcpy(buffer + buffer_pos, &peer->id, sizeof(peer->id));
+ buffer_pos += sizeof(peer->id);
 
- //memcpy(buffer + buffer_pos, &peer->as, sizeof(peer->as));
- //buffer_pos += sizeof(peer->as);
+ memcpy(buffer + buffer_pos, &peer->as, sizeof(peer->as));
+ buffer_pos += sizeof(peer->as);
 
  memcpy(buffer + buffer_pos, &local_path_id, sizeof(local_path_id));
  buffer_pos += sizeof(local_path_id);

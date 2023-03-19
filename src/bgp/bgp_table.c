@@ -307,15 +307,15 @@ bgp_node_match (const struct bgp_table *table, struct prefix *p, struct bgp_peer
   if (config.debug && bnv) bgp_node_vector_debug(bnv, p); 
 
   if (matched_node) {
-    //printf("MATCH - Number of linked-list nodes traversed: %d\n", ll_traversed_nodes); // Print the number of traversed nodes
-    printf("MATCH - Number of trie-tree nodes traversed: %d\n", trie_traversed_nodes); // Print the number of traversed nodes
+    printf("MATCH - Number of linked-list nodes traversed: %d\n", ll_traversed_nodes); // Print the number of traversed nodes
+    //printf("MATCH - Number of trie-tree nodes traversed: %d\n", trie_traversed_nodes); // Print the number of traversed nodes
     (*result_node) = matched_node;
     (*result_info) = matched_info;
     bgp_lock_node (peer, matched_node);
   }
   else {
-    //printf("NO-MATCH - Number of linked-list nodes traversed: %d\n", ll_traversed_nodes); // Print the number of traversed nodes
-    printf("NO-MATCH - Number of trie-tree nodes traversed: %d\n", trie_traversed_nodes); // Print the number of traversed nodes
+    printf("NO-MATCH - Number of linked-list nodes traversed: %d\n", ll_traversed_nodes); // Print the number of traversed nodes
+    //iprintf("NO-MATCH - Number of trie-tree nodes traversed: %d\n", trie_traversed_nodes); // Print the number of traversed nodes
     (*result_node) = NULL;
     (*result_info) = NULL;
   }
