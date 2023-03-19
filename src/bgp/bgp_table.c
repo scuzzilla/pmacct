@@ -296,6 +296,7 @@ bgp_node_match (const struct bgp_table *table, struct prefix *p, struct bgp_peer
 	  }
 
 	  if (node->p.prefixlen == p->prefixlen) break;
+          break;
 	}
       }
       }
