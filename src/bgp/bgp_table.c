@@ -281,14 +281,15 @@ bgp_node_match (const struct bgp_table *table, struct prefix *p, struct bgp_peer
   /* Walk down tree.  If there is matched route then store it to matched. */
   while (node && node->p.prefixlen <= p->prefixlen) {
     //trie_traversed_nodes++; // Add a counter for traversed nodes
-    ll_traversed_nodes = 0; // Add a counter for traversed nodes
     if (prefix_match(&node->p, p)) {
+      ll_traversed_nodes = 0; // Add a counter for traversed nodes
       for (info = node->info[modulo]; info; info = info->next) {
         //ll_traversed_nodes++; // Increment the counter for each traversed node
         if (!cmp_func(info, nmct2)) {
           matched_node = node;
           matched_info = info;
 
+          // Storing the results
           if (bnv) {
             bnv->v[bnv->entries].p = &node->p;
             bnv->v[bnv->entries].info = info;
