@@ -828,7 +828,7 @@ u_int32_t bgp_route_info_modulo_pathid(struct bgp_peer *peer, struct bgp_info *i
 {
   struct bgp_misc_structs *bms = bgp_select_misc_db(peer->type);
   path_id_t local_path_id = 1;
-  u_int32_t rd = (info->attr_extra->rd.type + info->attr_extra->rd.as + info->attr_extra->rd.val);
+  u_int32_t rd = (info->attr_extra->rd.val);
 
   if (path_id && *path_id) local_path_id = *path_id;
 
