@@ -824,51 +824,52 @@ void free_cache_legacy_bgp_primitives(struct cache_legacy_bgp_primitives **c)
   }
 }
 
-//u_int32_t bgp_route_info_modulo_pathid(struct bgp_peer *peer, path_id_t *path_id, int per_peer_buckets)
-//{
-//  struct bgp_misc_structs *bms = bgp_select_misc_db(peer->type);
-//  path_id_t local_path_id = 1;
-//
-//  if (path_id && *path_id) local_path_id = *path_id;
-//
-//  return (((peer->fd * per_peer_buckets) +
-//          ((local_path_id - 1) % per_peer_buckets)) %
-//          (bms->table_peer_buckets * per_peer_buckets));
-//}
-
 u_int32_t bgp_route_info_modulo_pathid(struct bgp_peer *peer, struct bgp_info *info, path_id_t *path_id, int per_peer_buckets)
 {
- struct bgp_misc_structs *bms = bgp_select_misc_db(peer->type);
- path_id_t local_path_id = 1;
+  struct bgp_misc_structs *bms = bgp_select_misc_db(peer->type);
+  path_id_t local_path_id = 1;
+  u_int32_t rd = (info->attr_extra->rd.type + info->attr_extra->rd.as + info->attr_extra->rd.val);
 
- if (path_id && *path_id) local_path_id = *path_id;
+  if (path_id && *path_id) local_path_id = *path_id;
 
- // Prepare a buffer to store concatenated data for hashing
- unsigned char buffer[sizeof(peer->id) + sizeof(peer->as) + sizeof(local_path_id) + sizeof(rd_t)];
- //unsigned char buffer[sizeof(local_path_id) + sizeof(rd_t)];
- size_t buffer_pos = 0;
-
- // Concatenate the BGP peer's ID, AS number, local_path_id, and RD into the buffer
- memcpy(buffer + buffer_pos, &peer->id, sizeof(peer->id));
- buffer_pos += sizeof(peer->id);
-
- memcpy(buffer + buffer_pos, &peer->as, sizeof(peer->as));
- buffer_pos += sizeof(peer->as);
-
- memcpy(buffer + buffer_pos, &local_path_id, sizeof(local_path_id));
- buffer_pos += sizeof(local_path_id);
-
- if (info && info->attr_extra) {
-   memcpy(buffer + buffer_pos, &info->attr_extra->rd, sizeof(rd_t));
-   buffer_pos += sizeof(rd_t);
- }
-
- // Calculate the hash value using the xxHash algorithm
- const uint64_t seed = 0; // Seed can be any arbitrary value, 0 is used here as an example
- uint32_t hash_value = (uint32_t)XXH3_64bits_withSeed(buffer, buffer_pos, seed);
-
- return (hash_value % (bms->table_peer_buckets * per_peer_buckets));
+  return ((((peer->fd + rd) * per_peer_buckets) +
+          ((local_path_id - 1) % per_peer_buckets)) %
+          (bms->table_peer_buckets * per_peer_buckets));
 }
+
+//u_int32_t bgp_route_info_modulo_pathid(struct bgp_peer *peer, struct bgp_info *info, path_id_t *path_id, int per_peer_buckets)
+//{
+// struct bgp_misc_structs *bms = bgp_select_misc_db(peer->type);
+// path_id_t local_path_id = 1;
+//
+// if (path_id && *path_id) local_path_id = *path_id;
+//
+// // Prepare a buffer to store concatenated data for hashing
+// unsigned char buffer[sizeof(peer->id) + sizeof(peer->as) + sizeof(local_path_id) + sizeof(rd_t)];
+// //unsigned char buffer[sizeof(local_path_id) + sizeof(rd_t)];
+// size_t buffer_pos = 0;
+//
+// // Concatenate the BGP peer's ID, AS number, local_path_id, and RD into the buffer
+// memcpy(buffer + buffer_pos, &peer->id, sizeof(peer->id));
+// buffer_pos += sizeof(peer->id);
+//
+// memcpy(buffer + buffer_pos, &peer->as, sizeof(peer->as));
+// buffer_pos += sizeof(peer->as);
+//
+// memcpy(buffer + buffer_pos, &local_path_id, sizeof(local_path_id));
+// buffer_pos += sizeof(local_path_id);
+//
+// if (info && info->attr_extra) {
+//   memcpy(buffer + buffer_pos, &info->attr_extra->rd, sizeof(rd_t));
+//   buffer_pos += sizeof(rd_t);
+// }
+//
+// // Calculate the hash value using the xxHash algorithm
+// const uint64_t seed = 0; // Seed can be any arbitrary value, 0 is used here as an example
+// uint32_t hash_value = (uint32_t)XXH3_64bits_withSeed(buffer, buffer_pos, seed);
+//
+// return (hash_value % (bms->table_peer_buckets * per_peer_buckets));
+//}
 
 int bgp_lg_daemon_ip_lookup(struct bgp_lg_req_ipl_data *req, struct bgp_lg_rep *rep, int type)
 {
