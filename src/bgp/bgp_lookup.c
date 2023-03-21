@@ -845,7 +845,7 @@ u_int32_t bgp_route_info_modulo_pathid(struct bgp_peer *peer, struct bgp_info *i
   //printf("String RD as: %s\n", bgp_rd_split[1]);
   //printf("String RD value: %s\n", bgp_rd_split[2]);
 
-  local_rd = atoi(bgp_rd_split[2]);
+  int local_rd = atoi(bgp_rd_split[2]);
 
   if (path_id && *path_id) local_path_id = *path_id;
 
