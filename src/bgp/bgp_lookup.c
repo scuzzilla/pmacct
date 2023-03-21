@@ -831,7 +831,7 @@ u_int32_t bgp_route_info_modulo_pathid(struct bgp_peer *peer, struct bgp_info *i
 
   /* BUG99 Debug */
   char rd_str[SRVBUFLEN] = {0};
-  bgp_rd2str(rd_str, info->attr_extra->rd);
+  bgp_rd2str(rd_str, &info->attr_extra->rd);
   char delim[] = ":";
   char *token = strtok(rd_str, delim);
   char bgp_rd_split[3][20];
