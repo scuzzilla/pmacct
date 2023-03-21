@@ -23,8 +23,8 @@
 #define _BGP_LOOKUP_H_
 
 /* prototypes */
-extern bool bgp_is_match_for_mpls_vpn(const struct bgp_info *info, const struct node_match_cmp_term2 *criteria);
-extern bool bgp_is_match_for_peer_dst_ip(const struct bgp_info *info, const struct node_match_cmp_term2 *criteria);
+//extern bool bgp_is_match_for_mpls_vpn(const struct bgp_info *info, const struct node_match_cmp_term2 *criteria);
+//extern bool bgp_is_match_for_peer_dst_ip(const struct bgp_info *info, const struct node_match_cmp_term2 *criteria);
 extern void bgp_srcdst_lookup(struct packet_ptrs *, int);
 extern void bgp_follow_nexthop_lookup(struct packet_ptrs *, int);
 extern struct bgp_peer *bgp_lookup_find_bgp_peer(struct sockaddr *, struct xflow_status_entry *, u_int16_t, int); 
