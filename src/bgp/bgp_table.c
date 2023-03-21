@@ -255,7 +255,6 @@ bgp_node_match (const struct bgp_table *table, struct prefix *p, struct bgp_peer
   struct bgp_info *info = NULL;
   struct bgp_info *matched_info;
   u_int32_t modulo, modulo_idx, local_modulo, modulo_max;
-  int ll_traversed_nodes;
 
   if (!table || !peer || !cmp_func) return;
 
@@ -277,35 +276,38 @@ bgp_node_match (const struct bgp_table *table, struct prefix *p, struct bgp_peer
   if (bnv) bnv->entries = 0;
 
   /* Walk down tree.  If there is matched route then store it to matched. */
-  while (node && node->p.prefixlen <= p->prefixlen) {
+  while (node && node->p.prefixlen <= p->prefixlen && prefix_match(&node->p, p)) {
     for (local_modulo = modulo, modulo_idx = 0; modulo_idx < modulo_max; local_modulo++, modulo_idx++) {
-      if (prefix_match(&node->p, p)) {
-        ll_traversed_nodes = 0;
-        for (info = node->info[local_modulo]; info; info = info->next) {
-          ll_traversed_nodes++;
-          if (!cmp_func(info, nmct2)) {
-            matched_node = node;
-            matched_info = info;
+      for (info = node->info[local_modulo]; info; info = info->next) {
+        if (!cmp_func(info, nmct2)) {
+          matched_node = node;
+          matched_info = info;
 
-            if (bnv) {
-              bnv->v[bnv->entries].p = &node->p;
-              bnv->v[bnv->entries].info = info;
-              bnv->entries++;
-            }
-
-            printf("MATCH - Number of linked-list nodes traversed: %d\n", ll_traversed_nodes);
-            (*result_node) = matched_node;
-            (*result_info) = matched_info;
-            bgp_lock_node (peer, matched_node);
-
-            break;
+          if (bnv) {
+            bnv->v[bnv->entries].p = &node->p;
+            bnv->v[bnv->entries].info = info;
+            bnv->entries++;
           }
+
+          if (node->p.prefixlen == p->prefixlen) break;
         }
       }
     }
+
     node = node->link[check_bit(&p->u.prefix, node->p.prefixlen)];
   }
+
   if (config.debug && bnv) bgp_node_vector_debug(bnv, p);
+
+  if (matched_node) {
+    (*result_node) = matched_node;
+    (*result_info) = matched_info;
+    bgp_lock_node (peer, matched_node);
+  }
+  else {
+    (*result_node) = NULL;
+    (*result_info) = NULL;
+  }
 }
 
 void
