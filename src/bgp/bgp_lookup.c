@@ -828,11 +828,28 @@ u_int32_t bgp_route_info_modulo_pathid(struct bgp_peer *peer, struct bgp_info *i
 {
   struct bgp_misc_structs *bms = bgp_select_misc_db(peer->type);
   path_id_t local_path_id = 1;
-  u_int32_t rd = (info->attr_extra->rd.val);
+
+  /* BUG99 Debug */
+  char rd_str[SRVBUFLEN] = {0};
+  bgp_rd2str(rd_str, info->attr_extra->rd);
+  char delim[] = ":";
+  char *token = strtok(rd_str, delim);
+  char bgp_rd_split[3][20];
+  int idx_0 = 0;
+  while (token != NULL && idx_0 < 3) {
+    strcpy(bgp_rd_split[idx_0], token);
+    token = strtok(NULL, delim);
+    idx_0++;
+  }
+  //printf("String RD type: %s\n", bgp_rd_split[0]);
+  //printf("String RD as: %s\n", bgp_rd_split[1]);
+  //printf("String RD value: %s\n", bgp_rd_split[2]);
+
+  local_rd = atoi(bgp_rd_split[2]);
 
   if (path_id && *path_id) local_path_id = *path_id;
 
-  return ((((peer->fd + rd) * per_peer_buckets) +
+  return ((((peer->fd + local_rd) * per_peer_buckets) +
           ((local_path_id - 1) % per_peer_buckets)) %
           (bms->table_peer_buckets * per_peer_buckets));
 }
