@@ -254,10 +254,8 @@ bgp_node_match (const struct bgp_table *table, struct prefix *p, struct bgp_peer
   struct bgp_node *node, *matched_node;
   struct bgp_info *info = NULL;
   struct bgp_info *matched_info;
-  //u_int32_t modulo, modulo_idx, local_modulo, modulo_max;
-  u_int32_t modulo, modulo_max;
-  int ll_traversed_nodes; // Add a counter for traversed nodes
-  //int trie_traversed_nodes = 0; // Add a counter for traversed nodes
+  u_int32_t modulo, modulo_idx, local_modulo, modulo_max;
+  int ll_traversed_nodes;
 
   if (!table || !peer || !cmp_func) return;
 
