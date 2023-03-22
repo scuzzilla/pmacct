@@ -601,7 +601,7 @@ int bgp_lookup_node_match_cmp_bgp(struct bgp_info *info, struct node_match_cmp_t
   int no_match = FALSE;
 
   if (info->peer != nmct2->peer) {
-    return TRUE;
+    return 0;
   }
 
   if (info->peer == nmct2->peer) {
