@@ -275,15 +275,9 @@ bgp_node_match (const struct bgp_table *table, struct prefix *p, struct bgp_peer
   node = table->top;
   if (bnv) bnv->entries = 0;
 
-  //modulo_max = 1;
-  //printf("modulo_max: %d\n", modulo_max);
   /* Walk down tree.  If there is matched route then store it to matched. */
   while (node && node->p.prefixlen <= p->prefixlen && prefix_match(&node->p, p)) {
-    for (
-      local_modulo = modulo, modulo_idx = 0;
-      modulo_idx < modulo_max;
-      local_modulo++, modulo_idx++
-      ) {
+    for (local_modulo = modulo, modulo_idx = 0; modulo_idx < modulo_max; local_modulo++, modulo_idx++) {
       for (info = node->info[local_modulo]; info; info = info->next) {
         if (!cmp_func(info, nmct2)) {
           matched_node = node;
