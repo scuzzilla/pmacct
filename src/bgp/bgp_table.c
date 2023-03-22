@@ -267,7 +267,7 @@ bgp_node_match (const struct bgp_table *table, struct prefix *p, struct bgp_peer
 
   // modulo_func --> modulo_max ...
   //if (modulo_func) modulo = modulo_func(peer, info, NULL, modulo_max);
-  if (modulo_func) modulo = modulo_func(peer, info, NULL, 999);
+  if (modulo_func) modulo = modulo_func(peer, info, NULL, bms->table_peer_buckets);
   else modulo = 0;
 
   matched_node = NULL;
