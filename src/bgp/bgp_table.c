@@ -254,7 +254,8 @@ bgp_node_match (const struct bgp_table *table, struct prefix *p, struct bgp_peer
   struct bgp_node *node, *matched_node;
   struct bgp_info *info = NULL;
   struct bgp_info *matched_info;
-  u_int32_t modulo, modulo_idx, local_modulo, modulo_max;
+  //u_int32_t modulo, modulo_idx, local_modulo, modulo_max;
+  u_int32_t modulo, modulo_max;
 
   if (!table || !peer || !cmp_func) return;
 
