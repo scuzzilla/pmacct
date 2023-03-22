@@ -265,7 +265,9 @@ bgp_node_match (const struct bgp_table *table, struct prefix *p, struct bgp_peer
   if (bms->table_per_peer_hash == BGP_ASPATH_HASH_PATHID) modulo_max = bms->table_per_peer_buckets;
   else modulo_max = 1;
 
-  if (modulo_func) modulo = modulo_func(peer, info, NULL, modulo_max);
+  // modulo_func --> modulo_max ...
+  //if (modulo_func) modulo = modulo_func(peer, info, NULL, modulo_max);
+  if (modulo_func) modulo = modulo_func(peer, info, NULL, 999);
   else modulo = 0;
 
   matched_node = NULL;
