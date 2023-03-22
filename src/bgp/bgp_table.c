@@ -266,8 +266,7 @@ bgp_node_match (const struct bgp_table *table, struct prefix *p, struct bgp_peer
   else modulo_max = 1;
 
   // modulo_func --> modulo_max ...
-  //if (modulo_func) modulo = modulo_func(peer, info, NULL, modulo_max);
-  if (modulo_func) modulo = modulo_func(peer, info, NULL, bms->table_peer_buckets);
+  if (modulo_func) modulo = modulo_func(peer, info, NULL, modulo_max);
   else modulo = 0;
 
   matched_node = NULL;
@@ -279,9 +278,9 @@ bgp_node_match (const struct bgp_table *table, struct prefix *p, struct bgp_peer
 
   /* Walk down tree.  If there is matched route then store it to matched. */
   while (node && node->p.prefixlen <= p->prefixlen && prefix_match(&node->p, p)) {
-    for (local_modulo = modulo, modulo_idx = 0; modulo_idx < modulo_max; local_modulo++, modulo_idx++) {
+    //for (local_modulo = modulo, modulo_idx = 0; modulo_idx < modulo_max; local_modulo++, modulo_idx++) {
       //for (info = node->info[local_modulo]; info; info = info->next) {
-      for (info = node->info[local_modulo]; info; info = info->next) {
+      for (info = node->info[modulo]; info; info = info->next) {
         if (!cmp_func(info, nmct2)) {
           printf("if (!cmp_func(info, nmct2))\n");
           matched_node = node;
@@ -301,7 +300,7 @@ bgp_node_match (const struct bgp_table *table, struct prefix *p, struct bgp_peer
           break;
         }
       }
-    }
+    //}
     node = node->link[check_bit(&p->u.prefix, node->p.prefixlen)];
   }
 }
