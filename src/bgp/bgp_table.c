@@ -282,7 +282,7 @@ bgp_node_match (const struct bgp_table *table, struct prefix *p, struct bgp_peer
       //for (info = node->info[local_modulo]; info; info = info->next) {
       for (info = node->info[modulo]; info; info = info->next) {
         if (!cmp_func(info, nmct2)) {
-          printf("if (!cmp_func(info, nmct2))\n");
+          //printf("if (!cmp_func(info, nmct2))\n");
           matched_node = node;
           matched_info = info;
 

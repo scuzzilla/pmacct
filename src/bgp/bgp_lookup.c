@@ -596,45 +596,45 @@ struct bgp_peer *bgp_lookup_find_bgp_peer(struct sockaddr *sa, struct xflow_stat
 //  return -1;
 //}
 
-//int bgp_lookup_node_match_cmp_bgp(struct bgp_info *info, struct node_match_cmp_term2 *nmct2)
-//{
-//  int no_match = FALSE; //0
-//
-//  if (info->peer == nmct2->peer) {
-//    if (nmct2->safi == SAFI_MPLS_VPN) no_match++;
-//
-//    if (nmct2->peer->cap_add_paths.cap[nmct2->afi][nmct2->safi] && nmct2->peer_dst_ip) no_match++;
-//
-//    if (nmct2->safi == SAFI_MPLS_VPN) {
-//      if (info->attr_extra && !memcmp(&info->attr_extra->rd, nmct2->rd, sizeof(rd_t))) no_match--;
-//    }
-//
-//    if (nmct2->peer->cap_add_paths.cap[nmct2->afi][nmct2->safi]) {
-//      if (nmct2->peer_dst_ip && info->attr) {
-//        if (info->attr->mp_nexthop.family) {
-//          if (!host_addr_cmp(&info->attr->mp_nexthop, nmct2->peer_dst_ip)) {
-//            no_match--;
-//          }
-//        }
-//        else if (info->attr->nexthop.s_addr && nmct2->peer_dst_ip->family == AF_INET) {
-//          if (info->attr->nexthop.s_addr == nmct2->peer_dst_ip->address.ipv4.s_addr) {
-//            no_match--;
-//          }
-//        }
-//      }
-//    }
-//
-//    if (!no_match) return FALSE;
-//  }
-//
-//  return TRUE;
-//}
-
 int bgp_lookup_node_match_cmp_bgp(struct bgp_info *info, struct node_match_cmp_term2 *nmct2)
 {
-  return 1;   // the CMP func will be evaluated to false - 100% CPU
-  //return 0; // the CMP func will be evaluated to true  - LOW  CPU
+  int no_match = FALSE; //0
+
+  if (info->peer == nmct2->peer) {
+    if (nmct2->safi == SAFI_MPLS_VPN) no_match++;
+
+    if (nmct2->peer->cap_add_paths.cap[nmct2->afi][nmct2->safi] && nmct2->peer_dst_ip) no_match++;
+
+    if (nmct2->safi == SAFI_MPLS_VPN) {
+      if (info->attr_extra && !memcmp(&info->attr_extra->rd, nmct2->rd, sizeof(rd_t))) no_match--;
+    }
+
+    if (nmct2->peer->cap_add_paths.cap[nmct2->afi][nmct2->safi]) {
+      if (nmct2->peer_dst_ip && info->attr) {
+        if (info->attr->mp_nexthop.family) {
+          if (!host_addr_cmp(&info->attr->mp_nexthop, nmct2->peer_dst_ip)) {
+            no_match--;
+          }
+        }
+        else if (info->attr->nexthop.s_addr && nmct2->peer_dst_ip->family == AF_INET) {
+          if (info->attr->nexthop.s_addr == nmct2->peer_dst_ip->address.ipv4.s_addr) {
+            no_match--;
+          }
+        }
+      }
+    }
+
+    if (!no_match) return FALSE;
+  }
+
+  return TRUE;
 }
+
+//int bgp_lookup_node_match_cmp_bgp(struct bgp_info *info, struct node_match_cmp_term2 *nmct2)
+//{
+//  return 1;   // the CMP func will be evaluated to false - 100% CPU
+//  //return 0; // the CMP func will be evaluated to true  - LOW  CPU
+//}
 
 int bgp_lookup_node_vector_unicast(struct prefix *p, struct bgp_peer *peer, struct bgp_node_vector *bnv)
 {
