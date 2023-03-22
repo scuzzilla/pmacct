@@ -596,45 +596,45 @@ struct bgp_peer *bgp_lookup_find_bgp_peer(struct sockaddr *sa, struct xflow_stat
 //  return -1;
 //}
 
-int bgp_lookup_node_match_cmp_bgp(struct bgp_info *info, struct node_match_cmp_term2 *nmct2)
-{
-  int no_match = FALSE; //0
-
-  if (info->peer == nmct2->peer) {
-    if (nmct2->safi == SAFI_MPLS_VPN) no_match++;
-
-    if (nmct2->peer->cap_add_paths.cap[nmct2->afi][nmct2->safi] && nmct2->peer_dst_ip) no_match++;
-
-    if (nmct2->safi == SAFI_MPLS_VPN) {
-      if (info->attr_extra && !memcmp(&info->attr_extra->rd, nmct2->rd, sizeof(rd_t))) no_match--;
-    }
-
-    if (nmct2->peer->cap_add_paths.cap[nmct2->afi][nmct2->safi]) {
-      if (nmct2->peer_dst_ip && info->attr) {
-        if (info->attr->mp_nexthop.family) {
-          if (!host_addr_cmp(&info->attr->mp_nexthop, nmct2->peer_dst_ip)) {
-            no_match--;
-          }
-        }
-        else if (info->attr->nexthop.s_addr && nmct2->peer_dst_ip->family == AF_INET) {
-          if (info->attr->nexthop.s_addr == nmct2->peer_dst_ip->address.ipv4.s_addr) {
-            no_match--;
-          }
-        }
-      }
-    }
-
-    if (!no_match) return FALSE;
-  }
-
-  return TRUE;
-}
-
 //int bgp_lookup_node_match_cmp_bgp(struct bgp_info *info, struct node_match_cmp_term2 *nmct2)
 //{
-//  return 1;   // the CMP func will be evaluated to false - 100% CPU
-//  //return 0; // the CMP func will be evaluated to true  - LOW  CPU
+//  int no_match = FALSE; //0
+//
+//  if (info->peer == nmct2->peer) {
+//    if (nmct2->safi == SAFI_MPLS_VPN) no_match++;
+//
+//    if (nmct2->peer->cap_add_paths.cap[nmct2->afi][nmct2->safi] && nmct2->peer_dst_ip) no_match++;
+//
+//    if (nmct2->safi == SAFI_MPLS_VPN) {
+//      if (info->attr_extra && !memcmp(&info->attr_extra->rd, nmct2->rd, sizeof(rd_t))) no_match--;
+//    }
+//
+//    if (nmct2->peer->cap_add_paths.cap[nmct2->afi][nmct2->safi]) {
+//      if (nmct2->peer_dst_ip && info->attr) {
+//        if (info->attr->mp_nexthop.family) {
+//          if (!host_addr_cmp(&info->attr->mp_nexthop, nmct2->peer_dst_ip)) {
+//            no_match--;
+//          }
+//        }
+//        else if (info->attr->nexthop.s_addr && nmct2->peer_dst_ip->family == AF_INET) {
+//          if (info->attr->nexthop.s_addr == nmct2->peer_dst_ip->address.ipv4.s_addr) {
+//            no_match--;
+//          }
+//        }
+//      }
+//    }
+//
+//    if (!no_match) return FALSE;
+//  }
+//
+//  return TRUE;
 //}
+
+int bgp_lookup_node_match_cmp_bgp(struct bgp_info *info, struct node_match_cmp_term2 *nmct2)
+{
+  //return 1;   // the CMP func will be evaluated to false - 100% CPU
+  return 0; // the CMP func will be evaluated to true  - LOW  CPU
+}
 
 int bgp_lookup_node_vector_unicast(struct prefix *p, struct bgp_peer *peer, struct bgp_node_vector *bnv)
 {
@@ -829,51 +829,51 @@ void free_cache_legacy_bgp_primitives(struct cache_legacy_bgp_primitives **c)
   }
 }
 
-//u_int32_t bgp_route_info_modulo_pathid(struct bgp_peer *peer, struct bgp_info *info, path_id_t *path_id, int per_peer_buckets)
-//{
-//  struct bgp_misc_structs *bms = bgp_select_misc_db(peer->type);
-//  path_id_t local_path_id = 1;
-//
-//  if (path_id && *path_id) local_path_id = *path_id;
-//
-//  return (((peer->fd * per_peer_buckets) +
-//          ((local_path_id - 1) % per_peer_buckets)) %
-//          (bms->table_peer_buckets * per_peer_buckets));
-//}
-
 u_int32_t bgp_route_info_modulo_pathid(struct bgp_peer *peer, struct bgp_info *info, path_id_t *path_id, int per_peer_buckets)
 {
- struct bgp_misc_structs *bms = bgp_select_misc_db(peer->type);
- path_id_t local_path_id = 1;
+  struct bgp_misc_structs *bms = bgp_select_misc_db(peer->type);
+  path_id_t local_path_id = 1;
 
- if (path_id && *path_id) local_path_id = *path_id;
+  if (path_id && *path_id) local_path_id = *path_id;
 
- // Prepare a buffer to store concatenated data for hashing
- unsigned char buffer[sizeof(peer->id) + sizeof(peer->as) + sizeof(local_path_id) + sizeof(rd_t)];
- //unsigned char buffer[sizeof(local_path_id) + sizeof(rd_t)];
- size_t buffer_pos = 0;
-
- // Concatenate the BGP peer's ID, AS number, local_path_id, and RD into the buffer
- memcpy(buffer + buffer_pos, &peer->id, sizeof(peer->id));
- buffer_pos += sizeof(peer->id);
-
- memcpy(buffer + buffer_pos, &peer->as, sizeof(peer->as));
- buffer_pos += sizeof(peer->as);
-
- memcpy(buffer + buffer_pos, &local_path_id, sizeof(local_path_id));
- buffer_pos += sizeof(local_path_id);
-
- if (info && info->attr_extra) {
-   memcpy(buffer + buffer_pos, &info->attr_extra->rd, sizeof(rd_t));
-   buffer_pos += sizeof(rd_t);
- }
-
- // Calculate the hash value using the xxHash algorithm
- const uint64_t seed = 0; // Seed can be any arbitrary value, 0 is used here as an example
- uint32_t hash_value = (uint32_t)XXH3_64bits_withSeed(buffer, buffer_pos, seed);
-
- return (hash_value % (bms->table_peer_buckets * per_peer_buckets));
+  return (((peer->fd * per_peer_buckets) +
+          ((local_path_id - 1) % per_peer_buckets)) %
+          (bms->table_peer_buckets * per_peer_buckets));
 }
+
+//u_int32_t bgp_route_info_modulo_pathid(struct bgp_peer *peer, struct bgp_info *info, path_id_t *path_id, int per_peer_buckets)
+//{
+// struct bgp_misc_structs *bms = bgp_select_misc_db(peer->type);
+// path_id_t local_path_id = 1;
+//
+// if (path_id && *path_id) local_path_id = *path_id;
+//
+// // Prepare a buffer to store concatenated data for hashing
+// unsigned char buffer[sizeof(peer->id) + sizeof(peer->as) + sizeof(local_path_id) + sizeof(rd_t)];
+// //unsigned char buffer[sizeof(local_path_id) + sizeof(rd_t)];
+// size_t buffer_pos = 0;
+//
+// // Concatenate the BGP peer's ID, AS number, local_path_id, and RD into the buffer
+// memcpy(buffer + buffer_pos, &peer->id, sizeof(peer->id));
+// buffer_pos += sizeof(peer->id);
+//
+// memcpy(buffer + buffer_pos, &peer->as, sizeof(peer->as));
+// buffer_pos += sizeof(peer->as);
+//
+// memcpy(buffer + buffer_pos, &local_path_id, sizeof(local_path_id));
+// buffer_pos += sizeof(local_path_id);
+//
+// if (info && info->attr_extra) {
+//   memcpy(buffer + buffer_pos, &info->attr_extra->rd, sizeof(rd_t));
+//   buffer_pos += sizeof(rd_t);
+// }
+//
+// // Calculate the hash value using the xxHash algorithm
+// const uint64_t seed = 0; // Seed can be any arbitrary value, 0 is used here as an example
+// uint32_t hash_value = (uint32_t)XXH3_64bits_withSeed(buffer, buffer_pos, seed);
+//
+// return (hash_value % (bms->table_peer_buckets * per_peer_buckets));
+//}
 
 int bgp_lg_daemon_ip_lookup(struct bgp_lg_req_ipl_data *req, struct bgp_lg_rep *rep, int type)
 {
