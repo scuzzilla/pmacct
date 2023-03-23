@@ -632,7 +632,7 @@ struct bgp_peer *bgp_lookup_find_bgp_peer(struct sockaddr *sa, struct xflow_stat
 
 int bgp_lookup_node_match_cmp_bgp(struct bgp_info *info, struct node_match_cmp_term2 *nmct2)
 {
-  if (info->peer != criteria->peer) {
+  if (info->peer != nmct2->peer) {
     return 1;
   }
 
