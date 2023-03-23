@@ -634,12 +634,12 @@ int bgp_lookup_node_match_cmp_bgp(struct bgp_info *info, struct node_match_cmp_t
 {
   if (nmct2->safi == SAFI_MPLS_VPN) {
     if (info->attr_extra && !memcmp(&info->attr_extra->rd, nmct2->rd, sizeof(rd_t))) {
-      printf("MATCH RD1 == RD2\n\n\n");
+      printf("MATCH RD1 == RD2\n");
       return 0;
     }
   }
 
-  return 1;
+  return -1;
 }
 
 //int bgp_lookup_node_match_cmp_bgp(struct bgp_info *info, struct node_match_cmp_term2 *nmct2)
