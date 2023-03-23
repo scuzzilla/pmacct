@@ -855,7 +855,7 @@ void free_cache_legacy_bgp_primitives(struct cache_legacy_bgp_primitives **c)
 
 u_int32_t bgp_route_info_modulo_pathid(struct bgp_peer *peer, struct bgp_info *info, path_id_t *path_id, int per_peer_buckets)
 {
- struct bgp_misc_structs *bms = bgp_select_misc_db(peer->type);
+ //struct bgp_misc_structs *bms = bgp_select_misc_db(peer->type);
  path_id_t local_path_id = 1;
 
  if (path_id && *path_id) local_path_id = *path_id;
@@ -875,16 +875,17 @@ u_int32_t bgp_route_info_modulo_pathid(struct bgp_peer *peer, struct bgp_info *i
  memcpy(buffer + buffer_pos, &local_path_id, sizeof(local_path_id));
  buffer_pos += sizeof(local_path_id);
 
- //if (info && info->attr_extra) {
+ if (info && info->attr_extra) {
    memcpy(buffer + buffer_pos, &info->attr_extra->rd, sizeof(rd_t));
    buffer_pos += sizeof(rd_t);
- //}
+ }
 
  // Calculate the hash value using the xxHash algorithm
  const uint64_t seed = 0; // Seed can be any arbitrary value, 0 is used here as an example
  uint32_t hash_value = (uint32_t)XXH3_64bits_withSeed(buffer, buffer_pos, seed);
 
- return (hash_value % (bms->table_peer_buckets * per_peer_buckets));
+ //return (hash_value % (bms->table_peer_buckets * per_peer_buckets));
+ return (hash_value % per_peer_buckets);
 }
 
 int bgp_lg_daemon_ip_lookup(struct bgp_lg_req_ipl_data *req, struct bgp_lg_rep *rep, int type)
