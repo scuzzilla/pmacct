@@ -632,6 +632,10 @@ struct bgp_peer *bgp_lookup_find_bgp_peer(struct sockaddr *sa, struct xflow_stat
 
 int bgp_lookup_node_match_cmp_bgp(struct bgp_info *info, struct node_match_cmp_term2 *nmct2)
 {
+  if (info->peer != criteria->peer) {
+    return 1;
+  }
+
   if (info->peer == nmct2->peer) {
     if (nmct2->safi == SAFI_MPLS_VPN) {
       if (info->attr_extra && !memcmp(&info->attr_extra->rd, nmct2->rd, sizeof(rd_t))) {
