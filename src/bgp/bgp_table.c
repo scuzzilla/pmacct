@@ -278,6 +278,7 @@ bgp_node_match (const struct bgp_table *table, struct prefix *p, struct bgp_peer
   if (bnv) bnv->entries = 0;
 
   /* Walk down tree.  If there is matched route then store it to matched. */
+  printf("Modulo_max: %d\n\n\n\n\n\n\n", modulo_max);
   int ll_walk = 0;
   int tree_walk = 0;
   while (node && node->p.prefixlen <= p->prefixlen) {
