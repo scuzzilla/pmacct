@@ -633,7 +633,7 @@ struct bgp_peer *bgp_lookup_find_bgp_peer(struct sockaddr *sa, struct xflow_stat
 int bgp_lookup_node_match_cmp_bgp(struct bgp_info *info, struct node_match_cmp_term2 *nmct2)
 {
   if (nmct2->safi == SAFI_MPLS_VPN) {
-    if (info->attr_extra && !memcmp(&info->attr_extra->rd, nmct2->rd, sizeof(rd_t))) {
+    if (info->attr_extra && !memcmp(&info->attr_extra->rd, &nmct2->rd, sizeof(rd_t))) {
       printf("MATCH RD1 == RD2\n");
       return 0;
     }
@@ -878,7 +878,6 @@ u_int32_t bgp_route_info_modulo_pathid(struct bgp_peer *peer, rd_t *rd, path_id_
  if (rd) {
    memcpy(buffer + buffer_pos, &rd, sizeof(rd_t));
    buffer_pos += sizeof(rd_t);
-   printf("Habemus RD");
  }
 
  // Calculate the hash value using the xxHash algorithm
