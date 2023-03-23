@@ -855,7 +855,7 @@ void free_cache_legacy_bgp_primitives(struct cache_legacy_bgp_primitives **c)
 
 u_int32_t bgp_route_info_modulo_pathid(struct bgp_peer *peer, rd_t *rd, path_id_t *path_id, int per_peer_buckets)
 {
- //struct bgp_misc_structs *bms = bgp_select_misc_db(peer->type);
+ struct bgp_misc_structs *bms = bgp_select_misc_db(peer->type);
  path_id_t local_path_id = 1;
 
  if (path_id && *path_id) local_path_id = *path_id;
