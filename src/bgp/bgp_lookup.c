@@ -878,6 +878,7 @@ u_int32_t bgp_route_info_modulo_pathid(struct bgp_peer *peer, struct bgp_info *i
  if (info && info->attr_extra) {
    memcpy(buffer + buffer_pos, &info->attr_extra->rd, sizeof(rd_t));
    buffer_pos += sizeof(rd_t);
+   printf("Habemus RD");
  }
 
  // Calculate the hash value using the xxHash algorithm
