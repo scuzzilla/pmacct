@@ -884,8 +884,7 @@ u_int32_t bgp_route_info_modulo_pathid(struct bgp_peer *peer, rd_t *rd, path_id_
  const uint64_t seed = 0; // Seed can be any arbitrary value, 0 is used here as an example
  uint32_t hash_value = (uint32_t)XXH3_64bits_withSeed(buffer, buffer_pos, seed);
 
- //return (hash_value % (bms->table_peer_buckets * per_peer_buckets));
- return (hash_value % per_peer_buckets);
+ return (hash_value % (bms->table_peer_buckets * per_peer_buckets));
 }
 
 int bgp_lg_daemon_ip_lookup(struct bgp_lg_req_ipl_data *req, struct bgp_lg_rep *rep, int type)
