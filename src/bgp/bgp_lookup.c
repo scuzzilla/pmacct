@@ -848,7 +848,7 @@ u_int32_t bgp_route_info_modulo_pathid(struct bgp_peer *peer, rd_t *rd, path_id_
 
   if (path_id && *path_id) local_path_id = *path_id;
 
-  return ((((peer->fd + rd->val) * per_peer_buckets) +
+  return ((((peer->fd + (rd->type + rd->as + rd->val)) * per_peer_buckets) +
           ((local_path_id - 1) % per_peer_buckets)) %
           (bms->table_peer_buckets * per_peer_buckets));
 }
