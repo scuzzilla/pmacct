@@ -86,7 +86,7 @@ struct bgp_peer *bgp_lookup_find_bmp_peer(struct sockaddr *sa, struct xflow_stat
   return peer;
 }
 
-u_int32_t bmp_route_info_modulo_pathid(struct bgp_peer *peer, struct bgp_info *, path_id_t *path_id, int per_peer_buckets)
+u_int32_t bmp_route_info_modulo_pathid(struct bgp_peer *peer, rd_t *rd, path_id_t *path_id, int per_peer_buckets)
 {
   struct bgp_misc_structs *bms = bgp_select_misc_db(peer->type);
   struct bmp_peer *bmpp = peer->bmp_se;

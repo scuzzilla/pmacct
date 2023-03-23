@@ -1858,9 +1858,9 @@ int bmp_dump_event_runner(struct pm_dump_runner *pdr)
           node = bgp_table_top(peer, table);
 
           while (node) {
-            struct bgp_info *ri;
-            u_int32_t modulo = bms->route_info_modulo(peer, ri, NULL, bms->table_per_peer_buckets);
+            u_int32_t modulo = bms->route_info_modulo(peer, NULL, NULL, bms->table_per_peer_buckets);
             u_int32_t peer_buckets;
+            struct bgp_info *ri;
 
             for (peer_buckets = 0; peer_buckets < config.bmp_table_per_peer_buckets; peer_buckets++) {
               for (ri = node->info[modulo+peer_buckets]; ri; ri = ri->next) {
