@@ -286,7 +286,7 @@ bgp_node_match (const struct bgp_table *table, struct prefix *p, struct bgp_peer
     if (prefix_match(&node->p, p)) {
       for (info = node->info[modulo]; info; info = info->next) {
         ll_walk++;
-        if (cmp_func(info, nmct2)) {
+        if (!cmp_func(info, nmct2)) {
           printf("MATCH - tree: %d, ll: %d\n", tree_walk, ll_walk);
           matched_node = node;
           matched_info = info;
