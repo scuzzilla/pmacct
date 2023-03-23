@@ -378,7 +378,7 @@ void bgp_follow_nexthop_lookup(struct packet_ptrs *pptrs, int type)
   }
 
   if (nh_peer) {
-    modulo = bms->route_info_modulo(nh_peer, nmct2.rd, NULL, bms->table_per_peer_buckets);
+    modulo = bms->route_info_modulo(nh_peer, NULL, NULL, bms->table_per_peer_buckets);
 
     // XXX: to be optimized 
     if (bms->table_per_peer_hash == BGP_ASPATH_HASH_PATHID) modulo_max = bms->table_per_peer_buckets;
@@ -633,7 +633,7 @@ struct bgp_peer *bgp_lookup_find_bgp_peer(struct sockaddr *sa, struct xflow_stat
 int bgp_lookup_node_match_cmp_bgp(struct bgp_info *info, struct node_match_cmp_term2 *nmct2)
 {
   if (nmct2->safi == SAFI_MPLS_VPN) {
-    if (info->attr_extra && !memcmp(&info->attr_extra->rd, &nmct2->rd, sizeof(rd_t))) {
+    if (info->attr_extra && !memcmp(&info->attr_extra->rd, nmct2->rd, sizeof(rd_t))) {
       printf("MATCH RD1 == RD2\n");
       return 0;
     }
