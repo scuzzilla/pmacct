@@ -287,7 +287,7 @@ bgp_node_match (const struct bgp_table *table, struct prefix *p, struct bgp_peer
       for (info = node->info[modulo]; info; info = info->next) {
         ll_walk++;
         if (!cmp_func(info, nmct2)) {
-          printf("MATCH - tree: %d, ll: %d\n", tree_walk, ll_walk);
+          printf("RD MATCH - tree: %d, ll: %d\n", tree_walk, ll_walk);
           matched_node = node;
           matched_info = info;
 
@@ -303,9 +303,9 @@ bgp_node_match (const struct bgp_table *table, struct prefix *p, struct bgp_peer
 
           break;
         }
-        printf("NO-MATCH - tree: %d, ll: %d\n", tree_walk, ll_walk);
       }
     }
+    printf("RD NO-MATCH - tree: %d, ll: %d\n", tree_walk, ll_walk);
     node = node->link[check_bit(&p->u.prefix, node->p.prefixlen)];
   }
 }
