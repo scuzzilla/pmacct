@@ -254,7 +254,7 @@ bgp_node_match (const struct bgp_table *table, struct prefix *p, struct bgp_peer
   struct bgp_node *node, *matched_node;
   struct bgp_info *info, *matched_info;
   u_int32_t modulo, modulo_idx, local_modulo, modulo_max;
-  //u_int32_t modulo, modulo_max;
+  ///u_int32_t modulo, modulo_max;
 
   if (!table || !peer || !cmp_func) return;
 
@@ -266,7 +266,7 @@ bgp_node_match (const struct bgp_table *table, struct prefix *p, struct bgp_peer
   else modulo_max = 1;
 
   // modulo_func --> modulo_max ... | anche il path_id e' a NULL!
-  if (modulo_func) modulo = modulo_func(peer, nmct2->rd, NULL, modulo_max);
+  if (modulo_func) modulo = modulo_func(peer, NULL, NULL, modulo_max);
   else modulo = 0;
 
   matched_node = NULL;
