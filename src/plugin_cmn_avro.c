@@ -106,7 +106,7 @@ avro_schema_t p_avro_schema_build_acct_data(u_int64_t wtc, u_int64_t wtc_2, u_in
     avro_schema_record_field_append(schema, "as_dst", avro_schema_long());
 
   if (wtc & COUNT_STD_COMM) {
-    if (1) {
+    if (config.bgpcomms_encode_as_array) {
       compose_bgp_comm_avro_schema(schema, "comms");
     }
     else {
@@ -115,7 +115,7 @@ avro_schema_t p_avro_schema_build_acct_data(u_int64_t wtc, u_int64_t wtc_2, u_in
   }
 
   if (wtc & COUNT_EXT_COMM) {
-    if (1) {
+    if (config.bgpcomms_encode_as_array)) {
       compose_bgp_comm_avro_schema(schema, "ecomms");
     }
     else {
@@ -586,7 +586,7 @@ avro_value_t compose_avro_acct_data(u_int64_t wtc, u_int64_t wtc_2, u_int64_t wt
   if (wtc & COUNT_STD_COMM) {
     vlen_prims_get(pvlen, COUNT_INT_STD_COMM, &str_ptr);
     printf("original_comm_str: %s\n", str_ptr);
-    if (1) {
+    if (config.bgpcomms_encode_as_array)) {
       if (str_ptr) {
         compose_bgp_comm_avro_data(str_ptr, "comms", value);
       }
@@ -610,7 +610,7 @@ avro_value_t compose_avro_acct_data(u_int64_t wtc, u_int64_t wtc_2, u_int64_t wt
   if (wtc & COUNT_EXT_COMM) {
     vlen_prims_get(pvlen, COUNT_INT_EXT_COMM, &str_ptr);
     printf("compose_bgp_comm_avro_data: %s\n", str_ptr);
-    if (1) {
+    if (config.bgpcomms_encode_as_array)) {
       if (str_ptr) {
         compose_bgp_comm_avro_data(str_ptr, "ecomms", value);
       }
