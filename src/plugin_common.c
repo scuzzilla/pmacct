@@ -1119,28 +1119,28 @@ cdada_list_t *fwd_status_to_linked_list()
   return fwd_status_linked_list;
 }
 
-cdada_list_t *bgp_comm_to_linked_list(const char *bgp_comms_str) {
+cdada_list_t *bgp_comm_to_linked_list(const char *bgp_comms_str)
+{
+  cdada_list_t *bgp_comms_linked_list = cdada_list_create(bgp_comm);
+  if (!bgp_comms_linked_list) {
+      Log(LOG_ERR, "ERROR ( %s/%s ): bgp_comm_to_linked_list() cannot instantiate bgp_comms_linked_list. Exiting ..\n", config.name, config.type);
+      exit_gracefully(1);
+  }
 
-    cdada_list_t *bgp_comms_linked_list = cdada_list_create(bgp_comm);
-    if (!bgp_comms_linked_list) {
-        Log(LOG_ERR, "ERROR ( %s/%s ): bgp_comm_to_linked_list() cannot instantiate bgp_comms_linked_list. Exiting ..\n", config.name, config.type);
-        exit_gracefully(1);
-    }
+  /* Safer to work on a copy of the original string*/
+  char bgp_comms_str_cpy[MAX_BGP_COMM_STR_LEN];
+  strncpy(bgp_comms_str_cpy, bgp_comms_str, MAX_BGP_COMM_STR_LEN);
+  bgp_comms_str_cpy[MAX_BGP_COMM_STR_LEN - 1] = '\0';
 
-    /* Safer to work on a copy of the original string*/
-    char bgp_comms_str_cpy[MAX_BGP_COMM_STR_LEN];
-    strncpy(bgp_comms_str_cpy, bgp_comms_str, MAX_BGP_COMM_STR_LEN);
-    bgp_comms_str_cpy[MAX_BGP_COMM_STR_LEN - 1] = '\0';
+  char *saveptr;
+  for (char *token = strtok_r(bgp_comms_str_cpy, " ", &saveptr); token != NULL; token = strtok_r(NULL, " ", &saveptr)) {
+      bgp_comm comm = {0};
+      strncpy(comm.comms, token, MAX_BGP_COMM_STR_LEN - 1);
+      printf("bgp_comm_to_linked_list: %s\n", comm.comms);
+      cdada_list_push_back(bgp_comms_linked_list, &comm);
+  }
 
-    char *saveptr;
-    for (char *token = strtok_r(bgp_comms_str_cpy, " ", &saveptr); token != NULL; token = strtok_r(NULL, " ", &saveptr)) {
-        bgp_comm comm = {0};
-        strncpy(comm.comms, token, MAX_BGP_COMM_STR_LEN - 1);
-        printf("bgp_comm_to_linked_list: %s\n", comm.comms);
-        cdada_list_push_back(bgp_comms_linked_list, &comm);
-    }
-
-    return bgp_comms_linked_list;
+  return bgp_comms_linked_list;
 }
 
 void mpls_label_stack_to_str(char *str_label_stack, int sls_len, u_int32_t *label_stack, int ls_len)

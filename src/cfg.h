@@ -548,6 +548,7 @@ struct configuration {
   struct pretag_label_filter ptlf;
   int pretag_label_encode_as_map;
   int tcpflags_encode_as_array;
+  int bgpcommss_encode_as_array;
   int mpls_label_stack_encode_as_array;
   int fwd_status_encode_as_string;
   int tos_encode_as_dscp;
