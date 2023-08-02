@@ -106,7 +106,7 @@ avro_schema_t p_avro_schema_build_acct_data(u_int64_t wtc, u_int64_t wtc_2, u_in
     avro_schema_record_field_append(schema, "as_dst", avro_schema_long());
 
   if (wtc & COUNT_STD_COMM) {
-    if (config.bgpcomms_encode_as_array) {
+    if (config.bgp_comms_encode_as_array) {
       compose_bgp_comm_avro_schema(schema, "comms");
     }
     else {
@@ -115,7 +115,7 @@ avro_schema_t p_avro_schema_build_acct_data(u_int64_t wtc, u_int64_t wtc_2, u_in
   }
 
   if (wtc & COUNT_EXT_COMM) {
-    if (config.bgpcomms_encode_as_array) {
+    if (config.bgp_comms_encode_as_array) {
       compose_bgp_comm_avro_schema(schema, "ecomms");
     }
     else {
@@ -123,8 +123,14 @@ avro_schema_t p_avro_schema_build_acct_data(u_int64_t wtc, u_int64_t wtc_2, u_in
     }
   }
 
-  if (wtc_2 & COUNT_LRG_COMM)
-    avro_schema_record_field_append(schema, "lcomms", avro_schema_string());
+  if (wtc_2 & COUNT_LRG_COMM) {
+    if (config.bgp_comms_encode_as_array) {
+      compose_bgp_comm_avro_schema(schema, "lcomms");
+    }
+    else {
+      avro_schema_record_field_append(schema, "lcomms", avro_schema_string());
+    }
+  }
 
   if (wtc & COUNT_AS_PATH)
     avro_schema_record_field_append(schema, "as_path", avro_schema_string());
@@ -586,7 +592,7 @@ avro_value_t compose_avro_acct_data(u_int64_t wtc, u_int64_t wtc_2, u_int64_t wt
   if (wtc & COUNT_STD_COMM) {
     vlen_prims_get(pvlen, COUNT_INT_STD_COMM, &str_ptr);
     printf("original_comm_str: %s\n", str_ptr);
-    if (config.bgpcomms_encode_as_array) {
+    if (config.bgp_comms_encode_as_array) {
       if (str_ptr) {
         compose_bgp_comm_avro_data(str_ptr, "comms", value);
       }
@@ -610,7 +616,7 @@ avro_value_t compose_avro_acct_data(u_int64_t wtc, u_int64_t wtc_2, u_int64_t wt
   if (wtc & COUNT_EXT_COMM) {
     vlen_prims_get(pvlen, COUNT_INT_EXT_COMM, &str_ptr);
     printf("compose_bgp_comm_avro_data: %s\n", str_ptr);
-    if (config.bgpcomms_encode_as_array) {
+    if (config.bgp_comms_encode_as_array) {
       if (str_ptr) {
         compose_bgp_comm_avro_data(str_ptr, "ecomms", value);
       }
@@ -633,17 +639,25 @@ avro_value_t compose_avro_acct_data(u_int64_t wtc, u_int64_t wtc_2, u_int64_t wt
 
   if (wtc_2 & COUNT_LRG_COMM) {
     vlen_prims_get(pvlen, COUNT_INT_LRG_COMM, &str_ptr);
-    if (str_ptr) {
-      bgp_comm = str_ptr;
-      while (bgp_comm) {
-        bgp_comm = strchr(str_ptr, ' ');
-        if (bgp_comm) *bgp_comm = '_';
+    if (config.bgp_comms_encode_as_array) {
+      if (str_ptr) {
+        compose_bgp_comm_avro_data(str_ptr, "lecomms", value);
       }
+      else str_ptr = empty_string;
     }
-    else str_ptr = empty_string;
+    else {
+      if (str_ptr) {
+        bgp_comm = str_ptr;
+        while (bgp_comm) {
+          bgp_comm = strchr(str_ptr, ' ');
+          if (bgp_comm) *bgp_comm = '_';
+        }
+      }
+      else str_ptr = empty_string;
 
-    pm_avro_check(avro_value_get_by_name(&value, "lcomms", &field, NULL));
-    pm_avro_check(avro_value_set_string(&field, str_ptr));
+      pm_avro_check(avro_value_get_by_name(&value, "lcomms", &field, NULL));
+      pm_avro_check(avro_value_set_string(&field, str_ptr));
+    }
   }
 
   if (wtc & COUNT_AS_PATH) {
