@@ -1144,7 +1144,8 @@ cdada_list_t *generic_delim_str_to_linked_list(const char *delimited_string, con
   char *saveptr = NULL;
   for (char *token = strtok_r(delimited_string_cpy, delimiter, &saveptr); token != NULL; token = strtok_r(NULL, delimiter, &saveptr)) {
       memset(&delim_s, 0, sizeof(delim_s));
-      strncpy(delim_s.delim_str, token, strlen(token) + 1);
+      strncpy(delim_s.delim_str, token, MAX_GENERIC_DELIM_STR_TOKEN_LEN - 1);
+      delim_s.delim_str[MAX_GENERIC_DELIM_STR_TOKEN_LEN - 1] = '\0';
       cdada_list_push_back(delim_str_to_linked_list, &delim_s);
   }
 
