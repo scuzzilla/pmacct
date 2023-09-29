@@ -1138,8 +1138,8 @@ cdada_list_t *generic_delim_str_to_linked_list(const char *delimited_string, con
 
   /* Safer to work on a copy of the original string */
   char delimited_string_cpy[max_delimited_string_len];
-  strncpy(delimited_string_cpy, delimited_string, MAX_GENERIC_DELIM_STR_TOKEN_LEN - 1);
-  delimited_string_cpy[MAX_GENERIC_DELIM_STR_TOKEN_LEN - 1] = '\0';
+  strncpy(delimited_string_cpy, delimited_string, max_delimited_string_len - 1);
+  delimited_string_cpy[max_delimited_string_len - 1] = '\0';
 
   char *saveptr = NULL;
   for (char *token = strtok_r(delimited_string_cpy, delimiter, &saveptr); token != NULL; token = strtok_r(NULL, delimiter, &saveptr)) {
